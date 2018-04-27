@@ -17,11 +17,14 @@ import com.friendbook.model.comment.CommentDao;
 import com.friendbook.model.post.Post;
 import com.friendbook.model.post.PostDao;
 
+
 @Component
 public class UserDao implements IUserDao {
 	
 	@Autowired
 	private PostDao postDao;
+	@Autowired
+	private CommentDao commentDao;
 
 	private Connection connection;
 	
@@ -145,7 +148,7 @@ public class UserDao implements IUserDao {
 				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
 				p.setLikes(postDao.getLikesByID(p.getId()));
 				p.setDate(rs.getTimestamp("date").toLocalDateTime());
-				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
+				commentDao.getAndSetAllCommentsOfGivenPost(p);
 				posts.add(p);
 			}
 		}
@@ -207,7 +210,7 @@ public class UserDao implements IUserDao {
 				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
 				p.setDate(rs.getTimestamp("date").toLocalDateTime());
 				p.setLikes(postDao.getLikesByID(p.getId()));
-				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
+				commentDao.getAndSetAllCommentsOfGivenPost(p);
 				feed.add(p);
 			}
 		}
@@ -239,7 +242,7 @@ public class UserDao implements IUserDao {
 			Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
 			p.setDate(rs.getTimestamp("date").toLocalDateTime());
 			p.setLikes(postDao.getLikesByID(p.getId()));
-			CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
+			commentDao.getAndSetAllCommentsOfGivenPost(p);
 			return p;
 		}
 	}

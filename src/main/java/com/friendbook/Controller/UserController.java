@@ -29,7 +29,6 @@ import com.friendbook.model.post.PostDao;
 import com.friendbook.model.user.User;
 import com.friendbook.model.user.UserDao;
 
-
 @Controller
 public class UserController {
 

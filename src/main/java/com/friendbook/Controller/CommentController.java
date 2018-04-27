@@ -25,30 +25,29 @@ public class CommentController {
 	private CommentDao commentDao;
 
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
-	protected void comment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession s = request.getSession();
-		User user = (User) s.getAttribute("user");
+	public void comment(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		User user = (User) session.getAttribute("user");
 		long postId = Long.parseLong(request.getParameter("currentPost"));
 		Long commentId = null;
 		if (!request.getParameter("currentComment").equals("null")) {
-			System.out.println(request.getParameter("currentComment"));
 			commentId = Long.parseLong(request.getParameter("currentComment"));
 		}
-		Comment comment = new Comment(user, user.getId(), postId, commentId, request.getParameter("text"));
+		Comment comment = new Comment(user.getId(), postId, commentId, request.getParameter("text"));
 		try {
-			commentDao.addComment(comment.getUserId(), comment);
+			commentDao.addComment(comment);
 
 			String json = new Gson().toJson(commentDao.getLastCommentByUserId(user.getId()));
 			response.getWriter().print(json);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Bug: " + e.getMessage());
 		}
 	}
 
 	@RequestMapping(value = "/likeComment", method = RequestMethod.POST)
-	protected void likeComment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void likeComment(HttpServletRequest req, HttpServletResponse resp) {
 		long commentId = Long.parseLong(req.getParameter("like"));
 		User u = (User) req.getSession().getAttribute("user");
 		System.out.println(commentId);

@@ -11,11 +11,23 @@
 <%@page import="java.time.LocalDateTime"%>
 <%@page import="java.time.LocalDate"%>
 <%@page import="java.time.Duration"%>
+<<<<<<< HEAD:src/main/webapp/WEB-INF/views/jsp/index.jsp
+=======
+<%@page import="com.friendbook.model.user.UserDao"%>
+<%@page import="com.friendbook.model.comment.Comment"%>
+>>>>>>> ba6b00ca7c0f8d34379eeeff4764c6ea3d271fad:src/main/webapp/WEB-INF/views/jsp/index2.jsp
 <%@page import="java.util.List"%>
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Set"%>
+<<<<<<< HEAD:src/main/webapp/WEB-INF/views/jsp/index.jsp
+=======
+<%@page import="com.friendbook.model.post.Post"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@ page import = "com.friendbook.model.user.User" %>
+>>>>>>> ba6b00ca7c0f8d34379eeeff4764c6ea3d271fad:src/main/webapp/WEB-INF/views/jsp/index2.jsp
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
