@@ -1,8 +1,8 @@
-package com.friendbook.Model.post;
+package com.friendbook.model.post;
 
 import java.sql.SQLException;
 
-import com.friendbook.Model.user.User;
+import com.friendbook.model.user.User;
 
 
 public interface IPostDao {
@@ -11,15 +11,13 @@ public interface IPostDao {
 	
 	int getLikesByID(long id) throws SQLException;
 	
-	void increasePostLike(User u, long id) throws SQLException;
+	void increasePostLikes(User u, long id) throws SQLException;
 	
-	void decreasePostLike(User u, long id) throws SQLException;
+	void decreasePostLikes(User u, long id) throws SQLException;
 	
 	void getAllPostsOfGivenUser(User user) throws SQLException;
 
-	void addPostWithImage(Post post) throws SQLException;
-
-	void addPostWithoutImage(Post post) throws SQLException;
+	void addPost(Post post) throws SQLException;
 	
 	String getPostImageById(long postId) throws SQLException;
 }

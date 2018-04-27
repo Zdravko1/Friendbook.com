@@ -1,4 +1,4 @@
-package com.friendbook.Controller;
+package com.friendbook.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.friendbook.Model.comment.Comment;
-import com.friendbook.Model.comment.CommentDao;
-import com.friendbook.Model.user.User;
+import com.friendbook.model.comment.Comment;
+import com.friendbook.model.comment.CommentDao;
+import com.friendbook.model.user.User;
 import com.google.gson.Gson;
 
 @Controller
@@ -25,8 +25,7 @@ public class CommentController {
 	private CommentDao commentDao;
 
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
-	protected void comment(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void comment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession s = request.getSession();
 		User user = (User) s.getAttribute("user");
 		long postId = Long.parseLong(request.getParameter("currentPost"));

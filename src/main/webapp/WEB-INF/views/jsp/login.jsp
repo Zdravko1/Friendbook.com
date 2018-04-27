@@ -1,7 +1,7 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import = "com.friendbook.Model.user.User" %>
+<%@ page import = "com.friendbook.model.user.User" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <title>Friendbook</title>
@@ -60,11 +60,11 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 		      <table align="center">
 		      	<tr>
 	              	<td>Username:</td>
-	              	<td><input type="text" class="w3-border w3-padding" name="username" value="nedelu" required></td>
+	              	<td><input type="text" class="w3-border w3-padding" name="username" value="zdravko91" required></td>
 	            </tr>
 	            <tr>
 	              	<td>Password:</td>
-	              	<td><input type="password" class="w3-border w3-padding" name="password" value="Nedelu123!@" required></td>
+	              	<td><input type="password" class="w3-border w3-padding" name="password" value="Zdravko123!@" required></td>
 	            </tr>
 	           </table>
 	           <button style="margin:auto;display:block" type="submit" class="w3-button w3-theme">Login</button><br>

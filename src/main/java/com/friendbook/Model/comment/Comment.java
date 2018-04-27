@@ -1,11 +1,11 @@
-package com.friendbook.Model.comment;
+package com.friendbook.model.comment;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.friendbook.Model.user.User;
+import com.friendbook.model.user.User;
 
 public class Comment {
 
@@ -53,6 +53,9 @@ public class Comment {
 		return date;
 	}
 	
+	public User getUser() {
+		return user;
+	}
 	
 	private void setText(String text) {
 		if (text == null || text.trim().isEmpty()) {

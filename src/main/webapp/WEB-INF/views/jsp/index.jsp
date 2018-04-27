@@ -1,18 +1,21 @@
+<%@page import="org.springframework.ui.Model"%>
+<%@page import="com.friendbook.model.post.Post"%>
+<%@page import="com.friendbook.model.user.User"%>
+<%@page import="com.friendbook.model.comment.Comment"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.time.LocalDateTime"%>
 <%@page import="java.time.LocalDate"%>
 <%@page import="java.time.Duration"%>
-<%@page import="com.friendbook.Model.user.UserDao"%>
-<%@page import="com.friendbook.Model.comment.Comment"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.friendbook.Model.post.Post"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<%@ page import = "com.friendbook.Model.user.User" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -40,7 +43,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 
 <% 
 User u = (User)request.getSession().getAttribute("visitedUser");
-boolean visit = u != null; 
+boolean visit = u != null;
 boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 
 <!-- Navbar -->
@@ -121,7 +124,6 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
           </form>
         </div>
       </div>
-      
       <% 
       int commentID = 0;
       int likeCommentID = 0;
@@ -161,7 +163,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), comments.get(j).getDate()).toHours())  %></span>
-        <h3><%= UserDao.getInstance().getByID(comments.get(j).getUserId()) %></h3><br>
+        <h3><%= comments.get(j).getUser() %></h3><br>
         
         <p><%= comments.get(j).getText()  %></p>
       
@@ -172,7 +174,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin">
         <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), childComments.get(x).getDate()).toHours()) %></span>
-        <h4><%= UserDao.getInstance().getByID(childComments.get(x).getUserId()) %></h4>
+        <h4><%= childComments.get(x).getUser() %></h4>
         <p><%= childComments.get(x).getText()  %></p>
          <form method="post" action="likeComment">
 	      <input type="hidden" id="likeComment<%=likeCommentID%>" value="<%= childComments.get(x).getId()%>">
@@ -247,7 +249,6 @@ function follow() {
 var likeCommentId = <%= likeCommentID+1%>;
 var comment_id = <%= commentID+1%>;
 var like_id = <%= i+1%>;
-
 function addPost(){
 	var flag = true;
 	var p = document.getElementById('middleColumnId');
@@ -271,7 +272,6 @@ function addPost(){
     	     console.log('Error: ', error);
     	   };
     	}
-
     getBase64(file);
     if(file == null){
     	send(data);
@@ -332,7 +332,6 @@ function addComment(a, b, c, d){
 		}
 	}
 }
-
 //likeComment
 function likeComments(a){
 	var like = document.getElementById("likeCommentID"+a);
@@ -363,14 +362,13 @@ function likePosts(a){
 		}
 	}
 }
-
 //search
 $(document).ready(function() {
     $(function() {
         $("#search").autocomplete({     
             source : function(request, response) {
               $.ajax({
-                   url : "searchServlet",
+                   url : "searchAutoComplete",
                    type : "GET",
                    data : {
                           term : request.term

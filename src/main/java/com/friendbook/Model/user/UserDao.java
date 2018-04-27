@@ -1,4 +1,4 @@
-package com.friendbook.Model.user;
+package com.friendbook.model.user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,29 +7,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.friendbook.Controller.PostManager;
-import com.friendbook.Model.comment.CommentDao;
-import com.friendbook.Model.post.Post;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.friendbook.exceptions.ExistingUserException;
 import com.friendbook.exceptions.ExistingUserNameException;
 import com.friendbook.exceptions.WrongCredentialsException;
+import com.friendbook.model.comment.CommentDao;
+import com.friendbook.model.post.Post;
+import com.friendbook.model.post.PostDao;
 
+@Component
 public class UserDao implements IUserDao {
+	
+	@Autowired
+	private PostDao postDao;
 
-	private static UserDao instance;
 	private Connection connection;
-
-	public static UserDao getInstance() {
-		if (instance == null) {
-			synchronized (UserDao.class) {
-				if (instance == null) {
-					instance = new UserDao();
-				}
-			}
-		}
-		return instance;
-	}
-
+	
 	private UserDao() {
 		connection = DBManager.getInstance().getConnection();
 	}
@@ -145,10 +140,10 @@ public class UserDao implements IUserDao {
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
-			User u = UserDao.getInstance().getByID(id);
+			User u = getByID(id);
 			while (rs.next()) {
 				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
-				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
+				p.setLikes(postDao.getLikesByID(p.getId()));
 				p.setDate(rs.getTimestamp("date").toLocalDateTime());
 				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
 				posts.add(p);
@@ -201,7 +196,7 @@ public class UserDao implements IUserDao {
 	}
 	
 	@Override
-	public ArrayList<Post> getUserFeedByID(long id) throws SQLException {
+	public ArrayList<Post> getUserFeedById(long id) throws SQLException {
 		ArrayList<Post> feed = new ArrayList<>();
 		String query = "SELECT id, image_video_path, description, date, user_id FROM posts WHERE user_id IN (SELECT user_id_followed FROM users_has_users WHERE user_id_follower = ?) ORDER BY date DESC";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
@@ -211,7 +206,7 @@ public class UserDao implements IUserDao {
 				User u = getByID(rs.getInt("user_id"));
 				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
 				p.setDate(rs.getTimestamp("date").toLocalDateTime());
-				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
+				p.setLikes(postDao.getLikesByID(p.getId()));
 				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
 				feed.add(p);
 			}
@@ -243,7 +238,7 @@ public class UserDao implements IUserDao {
 			User u = getByID(rs.getInt("user_id"));
 			Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
 			p.setDate(rs.getTimestamp("date").toLocalDateTime());
-			p.setLikes(PostManager.getInstance().getLikes(p.getId()));
+			p.setLikes(postDao.getLikesByID(p.getId()));
 			CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
 			return p;
 		}

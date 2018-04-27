@@ -1,8 +1,8 @@
-package com.friendbook.Model.comment;
+package com.friendbook.model.comment;
 
 import java.sql.SQLException;
 
-import com.friendbook.Model.post.Post;
+import com.friendbook.model.post.Post;
 
 public interface ICommentDao {
 

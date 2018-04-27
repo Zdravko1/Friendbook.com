@@ -1,4 +1,4 @@
-package com.friendbook.Model.user;
+package com.friendbook.model.user;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,14 +7,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.friendbook.Model.post.Post;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.friendbook.exceptions.ExistingUserNameException;
 import com.friendbook.exceptions.IncorrectUserNameException;
 import com.friendbook.exceptions.InvalidEmailException;
 import com.friendbook.exceptions.InvalidPasswordException;
+import com.friendbook.model.post.Post;
 
 public class User {
 
+	@Autowired
+	private UserDao userDao;
+	
 	private static final String PASS_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
 	private static final String EMAIL_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 	private static final int MIN_NAME_LENGTH = 6;
@@ -159,7 +164,7 @@ public class User {
 	
 	private boolean userNameCheck(String name) throws ExistingUserNameException, IncorrectUserNameException, SQLException{
 		if(name != null && name.length() >= User.MIN_NAME_LENGTH && name.length() <= User.MAX_NAME_LENGTH){
-			UserDao.getInstance().existingUserNameCheck(name);
+			userDao.existingUserNameCheck(name);
 			return true;
 		}
 		throw new IncorrectUserNameException();

@@ -1,13 +1,13 @@
-package com.friendbook.Model.user;
+package com.friendbook.model.user;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.friendbook.Model.post.Post;
 import com.friendbook.exceptions.ExistingUserException;
 import com.friendbook.exceptions.ExistingUserNameException;
 import com.friendbook.exceptions.WrongCredentialsException;
+import com.friendbook.model.post.Post;
 
 public interface IUserDao {
 
@@ -20,7 +20,7 @@ public interface IUserDao {
 	//TODO Delete, ima go i v postdao, i mai tam e po dobre
 	List<Post> getPostsByUserID(long id) throws SQLException;
 	void followUser(User user, long followedId) throws SQLException;
-	ArrayList<Post> getUserFeedByID(long id) throws SQLException;
+	ArrayList<Post> getUserFeedById(long id) throws SQLException;
 	User getUserByUsername(String username) throws SQLException;
 	List<String> getUsersNamesStartingWith(String term) throws SQLException;
 	boolean isPostLiked(User u, int id) throws SQLException;

@@ -1,4 +1,4 @@
-package com.friendbook.Model.comment;
+package com.friendbook.model.comment;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,16 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.friendbook.Controller.UserManager;
-import com.friendbook.Model.post.Post;
-import com.friendbook.Model.user.DBManager;
-import com.friendbook.Model.user.User;
+import com.friendbook.model.post.Post;
+import com.friendbook.model.user.DBManager;
+import com.friendbook.model.user.User;
+import com.friendbook.model.user.UserDao;
 
 @Component
 public class CommentDao implements ICommentDao {
 
+	@Autowired
+	private UserDao userDao;
 	private static CommentDao instance;
 	private Connection connection;
 
@@ -168,7 +171,7 @@ public class CommentDao implements ICommentDao {
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
-			User u = UserManager.getInstance().getUser(rs.getInt("user_id"));
+			User u = userDao.getByID(rs.getInt("user_id"));
 			Comment c = new Comment(rs.getLong("id"), rs.getLong("user_id"), rs.getInt("post_id"), null, rs.getString("text"), u);
 			c.setDate(rs.getTimestamp("date").toLocalDateTime());
 			return c;

@@ -1,4 +1,4 @@
-package com.friendbook.Model.post;
+package com.friendbook.model.post;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.friendbook.Model.comment.Comment;
-import com.friendbook.Model.user.User;
+import com.friendbook.model.comment.Comment;
+import com.friendbook.model.user.User;
 
 public class Post implements Serializable{
 
