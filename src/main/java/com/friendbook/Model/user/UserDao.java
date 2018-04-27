@@ -10,8 +10,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.friendbook.exceptions.ExistingUserException;
-import com.friendbook.exceptions.ExistingUserNameException;
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.comment.CommentDao;
 import com.friendbook.model.post.Post;
@@ -105,13 +103,13 @@ public class UserDao implements IUserDao {
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next() || !BCrypt.checkpw(password, rs.getString("password"))) {
-				throw new WrongCredentialsException();
+				throw new WrongCredentialsException("Wrong credentials");
 			}
 		}
 	}
 
 	@Override
-	public void existingUserCheck(String username, String email) throws SQLException, ExistingUserException {
+	public void existingUserCheck(String username, String email) throws SQLException, WrongCredentialsException {
 		try (PreparedStatement ps = connection
 				.prepareStatement("SELECT username, email FROM users WHERE username = ? AND email = ?")) {
 			ps.setString(1, username);
@@ -119,19 +117,19 @@ public class UserDao implements IUserDao {
 			ResultSet rs = ps.executeQuery();
 			// TODO check if this works
 			if (rs.next()) {
-				throw new ExistingUserException();
+				throw new WrongCredentialsException("Existing user");
 			}
 		}
 	}
 
 	@Override
-	public void existingUserNameCheck(String username) throws ExistingUserNameException, SQLException {
+	public void existingUserNameCheck(String username) throws SQLException, WrongCredentialsException {
 		try (PreparedStatement ps = connection.prepareStatement("SELECT username FROM users WHERE username = ?")) {
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			// TODO check if this works
 			if (rs.next()) {
-				throw new ExistingUserNameException();
+				throw new WrongCredentialsException("Existing username");
 			}
 		}
 	}

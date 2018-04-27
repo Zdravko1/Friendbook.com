@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.friendbook.exceptions.ExistingUserNameException;
-import com.friendbook.exceptions.IncorrectUserNameException;
-import com.friendbook.exceptions.InvalidEmailException;
-import com.friendbook.exceptions.InvalidPasswordException;
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 import com.friendbook.model.post.PostDao;
@@ -108,8 +103,7 @@ public class UserController {
 			userDao.saveUser(u);
 
 			return "login";
-		} catch (InvalidPasswordException | IncorrectUserNameException | ExistingUserNameException
-				| InvalidEmailException e) {
+		} catch (WrongCredentialsException e) {
 			request.setAttribute("error", e.getMessage());
 			return "error";
 		} catch (SQLException e) {
@@ -145,19 +139,19 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/search", method = RequestMethod.POST)
-	public String search(HttpSession session, HttpServletRequest request) {
+	public String search(HttpSession session, HttpServletRequest request, Model model) {
 		User user = (User) session.getAttribute("user");
-		String name = request.getParameter("user");
-		//cash visited user's object and posts in session
+		String searchUser = request.getParameter("user");
 		try {
-			User visitedUser = userDao.getUserByNames(name);
+			User visitedUser = userDao.getUserByNames(searchUser);
 			//if the searched user is followed already put a flag and change the follow button to followed in jsp
 			//or if this is the same user
 			if(userDao.isFollower(user, visitedUser.getId()) || user.getId() == visitedUser.getId()) {
 				visitedUser.setFollowed(true);
 			}
-			session.setAttribute("visitedUser", visitedUser);
-			session.setAttribute("visitedUserPosts", userDao.getPostsByUserID(visitedUser.getId()));
+			model.addAttribute("visit", true);
+			model.addAttribute("visitedUser", visitedUser);
+			model.addAttribute("posts", userDao.getPostsByUserID(visitedUser.getId()));
 			return "index";
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());

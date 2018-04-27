@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.friendbook.exceptions.ExistingUserException;
-import com.friendbook.exceptions.ExistingUserNameException;
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 
@@ -14,8 +12,8 @@ public interface IUserDao {
 	User getUserByNames(String name) throws SQLException;
 	User getByID(long id) throws SQLException;
 	void saveUser(User u) throws SQLException;
-	void existingUserNameCheck(String username) throws ExistingUserNameException, SQLException;
-	void existingUserCheck(String username, String email) throws ExistingUserException, SQLException;
+	void existingUserNameCheck(String username) throws WrongCredentialsException, SQLException;
+	void existingUserCheck(String username, String email) throws WrongCredentialsException, SQLException;
 	void loginCheck(String username, String password) throws WrongCredentialsException, SQLException;
 	//TODO Delete, ima go i v postdao, i mai tam e po dobre
 	List<Post> getPostsByUserID(long id) throws SQLException;

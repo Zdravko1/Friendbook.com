@@ -21,8 +21,6 @@ import com.friendbook.model.user.UserDao;
 public class PostController {
 
 	@Autowired
-	private PostDao postDao;
-	@Autowired
 	private UserDao userDao;
 	
 	@RequestMapping(value="/reloadPosts", method = RequestMethod.GET)
@@ -43,7 +41,7 @@ public class PostController {
 		try {
 			User u = (User) session.getAttribute("user");
 			ArrayList<Post> feed = userDao.getUserFeedById(u.getId());
-			model.addAttribute("feed", feed);
+			model.addAttribute("posts", feed);
 			return "index";
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());

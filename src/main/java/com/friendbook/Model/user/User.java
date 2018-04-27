@@ -9,10 +9,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.friendbook.exceptions.ExistingUserNameException;
-import com.friendbook.exceptions.IncorrectUserNameException;
-import com.friendbook.exceptions.InvalidEmailException;
-import com.friendbook.exceptions.InvalidPasswordException;
+import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 
 public class User {
@@ -103,19 +100,19 @@ public class User {
 		}
 	}
 	
-	public void setUsername(String username) throws ExistingUserNameException, IncorrectUserNameException, SQLException {
+	public void setUsername(String username) throws SQLException, WrongCredentialsException {
 		if(userNameCheck(username)) {
 			this.username = username;
 		}
 	}
 
-	public void setPassword(String password) throws InvalidPasswordException {
+	public void setPassword(String password) throws WrongCredentialsException {
 		if(passwordCheck(password)) {
 			this.password = password;
 		}
 	}
 
-	public void setEmail(String email) throws InvalidEmailException {
+	public void setEmail(String email) throws WrongCredentialsException {
 		if(emailCheck(email)) {
 			this.email = email;
 		}
@@ -148,26 +145,26 @@ public class User {
 	}
 	
 	//validations
-	private boolean passwordCheck(String password) throws InvalidPasswordException {
+	private boolean passwordCheck(String password) throws WrongCredentialsException {
 		if(password.matches(User.PASS_REGEX)) {
 			return true;
 		}
-		throw new InvalidPasswordException();
+		throw new WrongCredentialsException("Invalid password");
 	}
 	
-	private boolean emailCheck(String email) throws InvalidEmailException {
+	private boolean emailCheck(String email) throws WrongCredentialsException {
 		if(email.matches(User.EMAIL_REGEX)) {
 			return true;
 		}
-		throw new InvalidEmailException();
+		throw new WrongCredentialsException("Invalid email");
 	}
 	
-	private boolean userNameCheck(String name) throws ExistingUserNameException, IncorrectUserNameException, SQLException{
+	private boolean userNameCheck(String name) throws WrongCredentialsException, SQLException {
 		if(name != null && name.length() >= User.MIN_NAME_LENGTH && name.length() <= User.MAX_NAME_LENGTH){
 			userDao.existingUserNameCheck(name);
 			return true;
 		}
-		throw new IncorrectUserNameException();
+		throw new WrongCredentialsException("Incorrect username");
 	}
 	
 	@Override
