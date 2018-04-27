@@ -1,4 +1,4 @@
-package com.friendbook.Controller;
+package com.friendbook.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.friendbook.Model.comment.Comment;
-import com.friendbook.Model.comment.CommentDao;
-import com.friendbook.Model.user.User;
+import com.friendbook.model.comment.Comment;
+import com.friendbook.model.comment.CommentDao;
+import com.friendbook.model.user.User;
 import com.google.gson.Gson;
 
 @Controller
@@ -25,25 +25,24 @@ public class CommentController {
 	private CommentDao commentDao;
 
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
-	protected void comment(HttpServletRequest request, HttpServletResponse response)
+	protected void comment(HttpServletRequest request, HttpServletResponse response, HttpSession session)
 			throws ServletException, IOException {
-		HttpSession s = request.getSession();
-		User user = (User) s.getAttribute("user");
+		User user = (User) session.getAttribute("user");
 		long postId = Long.parseLong(request.getParameter("currentPost"));
 		Long commentId = null;
 		if (!request.getParameter("currentComment").equals("null")) {
-			System.out.println(request.getParameter("currentComment"));
 			commentId = Long.parseLong(request.getParameter("currentComment"));
 		}
-		Comment comment = new Comment(user, user.getId(), postId, commentId, request.getParameter("text"));
+		Comment comment = new Comment(user.getId(), postId, commentId, request.getParameter("text"));
 		try {
-			commentDao.addComment(comment.getUserId(), comment);
+			commentDao.addComment(comment);
 
 			String json = new Gson().toJson(commentDao.getLastCommentByUserId(user.getId()));
 			response.getWriter().print(json);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Bug: " + e.getMessage());
 		}
 	}

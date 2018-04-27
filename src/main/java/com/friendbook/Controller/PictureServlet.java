@@ -1,4 +1,4 @@
-package com.friendbook.Controller;
+package com.friendbook.controller;
 
 
 import java.io.File;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.friendbook.Model.post.PostDao;
+import com.friendbook.model.post.PostDao;
 
 /**
  * Servlet implementation class PictureServlet

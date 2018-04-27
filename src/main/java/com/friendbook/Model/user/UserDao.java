@@ -1,4 +1,4 @@
-package com.friendbook.Model.user;
+package com.friendbook.model.user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,15 +7,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.friendbook.Controller.PostManager;
-import com.friendbook.Model.comment.CommentDao;
-import com.friendbook.Model.post.Post;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.friendbook.controller.PostManager;
 import com.friendbook.exceptions.ExistingUserException;
 import com.friendbook.exceptions.ExistingUserNameException;
 import com.friendbook.exceptions.WrongCredentialsException;
+import com.friendbook.model.comment.CommentDao;
+import com.friendbook.model.post.Post;
 
+@Component
 public class UserDao implements IUserDao {
 
+	@Autowired
+	private CommentDao commentDao;
 	private static UserDao instance;
 	private Connection connection;
 
@@ -212,7 +218,7 @@ public class UserDao implements IUserDao {
 				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
 				p.setDate(rs.getTimestamp("date").toLocalDateTime());
 				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
-				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
+				commentDao.getAndSetAllCommentsOfGivenPost(p);
 				feed.add(p);
 			}
 		}
@@ -244,7 +250,7 @@ public class UserDao implements IUserDao {
 			Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
 			p.setDate(rs.getTimestamp("date").toLocalDateTime());
 			p.setLikes(PostManager.getInstance().getLikes(p.getId()));
-			CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
+			commentDao.getAndSetAllCommentsOfGivenPost(p);
 			return p;
 		}
 	}

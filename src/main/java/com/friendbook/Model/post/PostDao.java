@@ -1,4 +1,4 @@
-package com.friendbook.Model.post;
+package com.friendbook.model.post;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.friendbook.Model.user.DBManager;
-import com.friendbook.Model.user.User;
+import com.friendbook.model.user.DBManager;
+import com.friendbook.model.user.User;
 
 public class PostDao implements IPostDao {
 

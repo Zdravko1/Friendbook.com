@@ -1,4 +1,4 @@
-package com.friendbook.Model.user;
+package com.friendbook.model.user;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,11 +7,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.friendbook.Model.post.Post;
 import com.friendbook.exceptions.ExistingUserNameException;
 import com.friendbook.exceptions.IncorrectUserNameException;
 import com.friendbook.exceptions.InvalidEmailException;
 import com.friendbook.exceptions.InvalidPasswordException;
+import com.friendbook.model.post.Post;
 
 public class User {
 

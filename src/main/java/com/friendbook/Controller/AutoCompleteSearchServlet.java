@@ -1,4 +1,4 @@
-package com.friendbook.Controller;
+package com.friendbook.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;

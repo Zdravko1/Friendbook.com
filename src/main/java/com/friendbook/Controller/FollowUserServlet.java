@@ -1,4 +1,4 @@
-package com.friendbook.Controller;
+package com.friendbook.controller;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.friendbook.Model.user.User;
+import com.friendbook.model.user.User;
 import com.google.gson.Gson;
 
 

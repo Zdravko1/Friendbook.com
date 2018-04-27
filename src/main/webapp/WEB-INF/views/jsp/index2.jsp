@@ -2,17 +2,17 @@
 <%@page import="java.time.LocalDateTime"%>
 <%@page import="java.time.LocalDate"%>
 <%@page import="java.time.Duration"%>
-<%@page import="com.friendbook.Model.user.UserDao"%>
-<%@page import="com.friendbook.Model.comment.Comment"%>
+<%@page import="com.friendbook.model.user.UserDao"%>
+<%@page import="com.friendbook.model.comment.Comment"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.friendbook.Model.post.Post"%>
+<%@page import="com.friendbook.model.post.Post"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import = "com.friendbook.Model.user.User" %>
+<%@ page import = "com.friendbook.model.user.User" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

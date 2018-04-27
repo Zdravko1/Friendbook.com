@@ -1,8 +1,8 @@
-package com.friendbook.Model.post;
+package com.friendbook.model.post;
 
 import java.sql.SQLException;
 
-import com.friendbook.Model.user.User;
+import com.friendbook.model.user.User;
 
 
 public interface IPostDao {

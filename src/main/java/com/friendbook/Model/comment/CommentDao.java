@@ -1,31 +1,33 @@
-package com.friendbook.Model.comment;
+package com.friendbook.model.comment;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 import org.springframework.stereotype.Component;
 
-import com.friendbook.Controller.UserManager;
-import com.friendbook.Model.post.Post;
-import com.friendbook.Model.user.DBManager;
-import com.friendbook.Model.user.User;
+import com.friendbook.controller.UserManager;
+import com.friendbook.model.post.Post;
+import com.friendbook.model.user.DBManager;
+import com.friendbook.model.user.User;
+import com.friendbook.model.user.UserDao;
 
 @Component
 public class CommentDao implements ICommentDao {
 
-	private static CommentDao instance;
 	private Connection connection;
+	private static CommentDao instance;
 
 	private CommentDao() {
 		connection = DBManager.getInstance().getConnection();
 	}
-
+	
 	public static CommentDao getInstance() {
 		if (instance == null) {
-			synchronized (Comment.class) {
+			synchronized (CommentDao.class) {
 				if (instance == null) {
 					instance = new CommentDao();
 				}
@@ -72,23 +74,15 @@ public class CommentDao implements ICommentDao {
 	}
 
 	@Override
-	public void addComment(long userId, Comment comment) throws SQLException {
-		String query;
-		boolean isParentless = comment.getParentComment() == null;
-		if (isParentless) {
-			query = "INSERT INTO comments (text, post_id, parent_id, user_id) VALUES (?,?,null,?)";
-		} else {
-			query = "INSERT INTO comments (text, post_id, parent_id, user_id) VALUES (?,?,?,?)";
-		}
+	public void addComment(Comment comment) throws SQLException {
+		String query = "INSERT INTO comments (text, post_id, parent_id, user_id) VALUES (?,?,?,?)";
+
 		try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, comment.getText());
 			statement.setLong(2, comment.getPost());
-			if (!isParentless) {
-				statement.setLong(3, comment.getParentComment());
-				statement.setLong(4, userId);
-			} else {
-				statement.setLong(3, userId);
-			}			
+			statement.setLong(3, comment.getParentComment() == null ? Types.NULL : comment.getParentComment());
+			statement.setLong(4, comment.getUserId());
+
 			statement.executeUpdate();
 			ResultSet rs = statement.getGeneratedKeys();
 			rs.next();
@@ -109,27 +103,10 @@ public class CommentDao implements ICommentDao {
 							rs.getLong("parent_id"), rs.getString("text"));
 					comment.setLikes(getLikesByID(comment.getId()));
 					comment.setDate(rs.getTimestamp("date").toLocalDateTime());
-					CommentDao.getInstance().getCommentsOfParentComment(comment);
+					getCommentsOfParentComment(comment);
 					post.addComment(comment);
 				}
 			}
-		}
-	}
-
-	@Override
-	public void deleteComment(long commentId) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement("DELETE FROM comments WHERE id = ?")) {
-			statement.setLong(1, commentId);
-			statement.executeUpdate();
-		}
-	}
-
-	@Override
-	public void changeComment(Comment comment) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement("UPDATE comments SET text = ? WHERE id = ?")) {
-			statement.setString(1, comment.getText());
-			statement.setLong(2, comment.getId());
-			statement.executeUpdate();
 		}
 	}
 
@@ -164,12 +141,13 @@ public class CommentDao implements ICommentDao {
 
 	public Comment getLastCommentByUserId(long id) throws SQLException {
 		String query = "SELECT id, text, date, post_id, user_id FROM comments WHERE user_id = ? ORDER BY date DESC LIMIT 1 ";
-		try(PreparedStatement ps = connection.prepareStatement(query)){
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			User u = UserManager.getInstance().getUser(rs.getInt("user_id"));
-			Comment c = new Comment(rs.getLong("id"), rs.getLong("user_id"), rs.getInt("post_id"), null, rs.getString("text"), u);
+			Comment c = new Comment(rs.getLong("id"), rs.getLong("user_id"), rs.getInt("post_id"), null,
+					rs.getString("text"), u);
 			c.setDate(rs.getTimestamp("date").toLocalDateTime());
 			return c;
 		}

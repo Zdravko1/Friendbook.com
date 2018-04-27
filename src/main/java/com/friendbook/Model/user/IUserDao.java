@@ -1,13 +1,13 @@
-package com.friendbook.Model.user;
+package com.friendbook.model.user;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.friendbook.Model.post.Post;
 import com.friendbook.exceptions.ExistingUserException;
 import com.friendbook.exceptions.ExistingUserNameException;
 import com.friendbook.exceptions.WrongCredentialsException;
+import com.friendbook.model.post.Post;
 
 public interface IUserDao {
 

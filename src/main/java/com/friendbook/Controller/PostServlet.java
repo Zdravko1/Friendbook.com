@@ -1,4 +1,4 @@
-package com.friendbook.Controller;
+package com.friendbook.controller;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,10 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 
-import com.friendbook.Model.post.Post;
-import com.friendbook.Model.user.User;
+import com.friendbook.model.post.Post;
+import com.friendbook.model.user.User;
 import com.google.gson.Gson;
 
 

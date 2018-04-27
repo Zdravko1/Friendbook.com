@@ -1,13 +1,13 @@
-package com.friendbook.Controller;
+package com.friendbook.controller;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.friendbook.Model.post.Post;
-import com.friendbook.Model.post.PostDao;
-import com.friendbook.Model.user.User;
+import com.friendbook.model.post.Post;
+import com.friendbook.model.post.PostDao;
+import com.friendbook.model.user.User;
 
 public class PostManager {
 

@@ -1,16 +1,12 @@
-package com.friendbook.Model.comment;
+package com.friendbook.model.comment;
 
 import java.sql.SQLException;
 
-import com.friendbook.Model.post.Post;
+import com.friendbook.model.post.Post;
 
 public interface ICommentDao {
 
-	void addComment(long userId, Comment comment) throws SQLException;
-
-	void deleteComment(long commentId) throws SQLException;
-
-	void changeComment(Comment comment) throws SQLException;
+	void addComment(Comment comment) throws SQLException;
 
 	void getAndSetAllCommentsOfGivenPost(Post post) throws SQLException;
 
