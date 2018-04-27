@@ -43,6 +43,22 @@ public class UserController {
 		return "register";
 	}
 	
+	@RequestMapping(value="/login", method = RequestMethod.GET)
+	public String getLoginPage(HttpSession session, Model model) {
+		if(session.isNew()) {
+			return "login";
+		}
+		try {
+			User user = (User) session.getAttribute("user");
+			List<Post> posts = userDao.getPostsByUserID(user.getId());
+			model.addAttribute("posts", posts);
+			return "index";
+		} catch (SQLException e) {
+			System.out.println("SQL bug: " + e.getMessage());
+			return "error";
+		}
+	}
+	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public String login(HttpServletRequest req, HttpSession session, Model model) {
 		try {
@@ -66,23 +82,6 @@ public class UserController {
 			System.out.println("Some error occured: " + e.getMessage());
 			e.printStackTrace();
 			return "error";
-		}
-	}
-	
-	@RequestMapping(value="/login", method = RequestMethod.GET)
-	public String sessionCheck(HttpSession session, Model model) {
-		if(session.isNew() || session.getAttribute("user") == null) {
-			return "login";
-		} else {
-			try {
-				User user = (User) session.getAttribute("user");
-				List<Post> posts = userDao.getPostsByUserID(user.getId());
-				model.addAttribute("posts", posts);
-				return "index";
-			} catch (SQLException e) {
-				System.out.println("SQL bug: " + e.getMessage());
-				return "error";
-			}
 		}
 	}
 	
@@ -123,22 +122,6 @@ public class UserController {
 	public String logout(HttpSession session) {
 		session.invalidate();
 		return "login";
-	}
-	
-	@RequestMapping(value="/feed", method = RequestMethod.GET)
-	public String feed(HttpSession session) {
-		//remove visited user's object and name from session when "home" button is pressed
-		session.removeAttribute("visitedUser");
-		session.removeAttribute("visitedUserPosts");
-		try {
-			User u = (User) session.getAttribute("user");
-			ArrayList<Post> feed = userDao.getUserFeedById(u.getId());
-			session.setAttribute("feed", feed);
-			return "index";
-		} catch (SQLException e) {
-			System.out.println("SQL Bug: " + e.getMessage());
-			return "error";
-		}
 	}
 	
 	@RequestMapping(value="/getPic", method = RequestMethod.GET)

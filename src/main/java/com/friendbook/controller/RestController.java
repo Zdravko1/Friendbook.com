@@ -20,6 +20,7 @@ import com.friendbook.model.post.Post;
 import com.friendbook.model.post.PostDao;
 import com.friendbook.model.user.User;
 import com.friendbook.model.user.UserDao;
+import com.google.gson.Gson;
 
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
@@ -31,7 +32,7 @@ public class RestController {
 	@Autowired
 	private PostDao postDao;
 
-	@RequestMapping(value="/searchAutoComplete", method = RequestMethod.POST)
+	@RequestMapping(value="/searchAutoComplete", method = RequestMethod.GET)
 	@ResponseBody
 	public List<String> searchAutoComplete(HttpServletResponse response, HttpServletRequest request) {
 		  response.setContentType("application/json");
@@ -86,7 +87,7 @@ public class RestController {
 	
 	@RequestMapping(value="/post", method = RequestMethod.POST)
 	@ResponseBody
-	public Post post(HttpServletRequest request) {
+	public String post(HttpServletRequest request) {
 		User user = (User)request.getSession().getAttribute("user");
 		Post post = null;
 		//test
@@ -118,7 +119,7 @@ public class RestController {
 			postDao.addPost(post);
 			System.out.println("Added post to database.");
 			
-			return userDao.getLastPostByUserId(user.getId());
+			return new Gson().toJson(userDao.getLastPostByUserId(user.getId()));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

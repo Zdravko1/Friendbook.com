@@ -1,33 +1,7 @@
-<%@page import="org.springframework.ui.Model"%>
-<%@page import="com.friendbook.model.post.Post"%>
-<%@page import="com.friendbook.model.user.User"%>
-<%@page import="com.friendbook.model.comment.Comment"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
-<%@page import="java.text.DateFormat"%>
-<%@page import="java.time.LocalDateTime"%>
-<%@page import="java.time.LocalDate"%>
-<%@page import="java.time.Duration"%>
-<<<<<<< HEAD:src/main/webapp/WEB-INF/views/jsp/index.jsp
-=======
-<%@page import="com.friendbook.model.user.UserDao"%>
-<%@page import="com.friendbook.model.comment.Comment"%>
->>>>>>> ba6b00ca7c0f8d34379eeeff4764c6ea3d271fad:src/main/webapp/WEB-INF/views/jsp/index2.jsp
-<%@page import="java.util.List"%>
-<%@page import="java.util.LinkedList"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.HashSet"%>
-<%@page import="java.util.Set"%>
-<<<<<<< HEAD:src/main/webapp/WEB-INF/views/jsp/index.jsp
-=======
-<%@page import="com.friendbook.model.post.Post"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<%@ page import = "com.friendbook.model.user.User" %>
->>>>>>> ba6b00ca7c0f8d34379eeeff4764c6ea3d271fad:src/main/webapp/WEB-INF/views/jsp/index2.jsp
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -53,17 +27,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 </style>
 <body class="w3-theme-l5">
 
-<% 
-User u = (User)request.getSession().getAttribute("visitedUser");
-boolean visit = u != null;
-boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 
 <!-- Navbar -->
 <div class="w3-top">
  <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  	<a href="." class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
-  <a href="." class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
+  <a  href="reloadPosts" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
+  <form method="GET" action="reloadFeed"><a type="submit" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Feed"><i class="fa fa-globe"></i></a></form>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="My Account"><i class="fa fa-user"></i></a>
   <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
   
@@ -92,16 +62,11 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
       <!-- Profile -->
       <div class="w3-card w3-round w3-white">
         <div class="w3-container">
-         <h4 class="w3-center"><%= (visit) ? "Profile" : "My Profile"%></h4>
-         <h4 class="w3-center"><%= (visit) ? u : request.getSession().getAttribute("user") %></h4>
-         <div style="display : <%= !visit ? "none" : "" %>">
-         	
-        		<% if(visit){%>
-        			<button id="follow" name="followedId" onclick="follow()" value="<%=u.getId()%>" class="w3-button w3-theme"><%=u.isFollowed() ? "Followed" : "Follow" %></button>
-        		<%}%>
-         	
-         </div>
-         <hr>
+        <h4 class="w3-center">${ !visit ? "MyProfile" : "Profile" }
+        <h4 class="w3-center">${ !visit ? sessionScope.user : visitedUser }
+         <c:if test="${ visit }">
+         	<button id="follow" name="followedId" onclick="follow()" value="${ visitedUser.getId() }" class="w3-button w3-theme">${ visitedUser.isFollowed() ? Followed : Follow }</button>
+         </c:if>
         </div>
       </div>
       <br>
@@ -114,19 +79,21 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
     
       <div class="w3-row-padding">
         <div class="w3-col m12">
-          <div class="w3-card w3-round w3-white" style="display : <%= (visit || onFeed) ? "none" : "" %>">
-            <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Post something</h6>
-              <form action="post" method="post" enctype="multipart/form-data">
-              	<input id="post" contenteditable="true" class="w3-border w3-padding" name="text" required>
-				<input id="fileId" type="file" name="file" size="50" />
-				<br>
-              	 <br>
-              	 <br>
-              	 <input onclick="addPost()" class="w3-button w3-theme" type="button" value="Post">
-              </form>
-            </div>
-          </div>
+          <c:if test="${ !(visit || onFeed) }">
+	          <div class="w3-card w3-round w3-white" >
+	            <div class="w3-container w3-padding">
+	              <h6 class="w3-opacity">Post something</h6>
+	              <form action="post" method="post" enctype="multipart/form-data">
+	              	<input id="post" contenteditable="true" class="w3-border w3-padding" name="text" required>
+					<input id="fileId" type="file" name="file" size="50" />
+					<br>
+	              	 <br>
+	              	 <br>
+	              	 <input onclick="addPost()" class="w3-button w3-theme" type="button" value="Post">
+	              </form>
+	            </div>
+	          </div>
+          </c:if>
           <form method="post" action="order">
           <select name="order">
           	<option value="likes">Likes</option>
@@ -136,95 +103,64 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
           </form>
         </div>
       </div>
-      <% 
-      int commentID = 0;
-      int likeCommentID = 0;
-      int i = 0;
-      ArrayList<Post> posts = null;
-      
-      	if(visit){
-      		posts = (ArrayList)session.getAttribute("visitedUserPosts");
-      	} else if(onFeed) {
-      		posts = (ArrayList)session.getAttribute("feed");
-      	} else{
-      		posts = (ArrayList)request.getAttribute("posts");
-      	}
-        
-      	if(posts != null){
-      	for(; i < posts.size(); i++){
-      %>
-      <div id="postId<%=i %>" class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <span class="w3-right w3-opacity"><%=  Math.abs(Duration.between(LocalDateTime.now(), posts.get(i).getDate()).toHours())  %></span>
-        <h4><%= posts.get(i).getUser()	%></h4><br>
-        <!-- -=============POST IMAGE================- -->
-        <img src="getPic?postId=<%= posts.get(i).getId()%>" class="w3-left w3-margin-right" height="50%" width="50%" alt=""> 
-        <hr class="w3-clear">
-        <p><%= posts.get(i).getText() %></p>
-          <div class="w3-row-padding" style="margin:0 -16px">
-	      </div>
-	   <form method="post" action="likePost">
-	      <input type="hidden" id="like<%=i %>" value="<%= posts.get(i).getId()%>">
-	      <input onclick="likePosts(<%=i %>)" type="button"class="w3-button w3-theme-d1 w3-margin-bottom" class="fa fa-thumbs-up" value="Like">
-	      <p id="likeID<%=i%>"><%= posts.get(i).getLikes() %></p>
-      </form>
-      
-     <% 
-   		List<Comment> comments = posts.get(i).getComments();
-   		 if(comments != null){
-    	for(int j=0; j < comments.size(); j++) {
-      %>
-      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), comments.get(j).getDate()).toHours())  %></span>
-        <h3><%= comments.get(j).getUser() %></h3><br>
-        
-        <p><%= comments.get(j).getText()  %></p>
-      
-         <% 
-   		List<Comment> childComments = comments.get(j).getComments();
-   		 if(childComments != null){
-    	for(int x = 0; x < childComments.size(); x++) {
-      %>
-      <div class="w3-container w3-card w3-white w3-round w3-margin">
-        <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), childComments.get(x).getDate()).toHours()) %></span>
-        <h4><%= childComments.get(x).getUser() %></h4>
-        <p><%= childComments.get(x).getText()  %></p>
-         <form method="post" action="likeComment">
-	      <input type="hidden" id="likeComment<%=likeCommentID%>" value="<%= childComments.get(x).getId()%>">
-	      <input onclick="likeComments(<%=likeCommentID%>)" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
-	      <p id="likeCommentID<%=likeCommentID++%>"><%= childComments.get(x).getLikes() %></p>
-      </form>
-	  </div>
-
-      <%}} %>
-        
-        <form method="post" action="likeComment">
-	      <input type="hidden" id="likeComment<%=likeCommentID%>" value="<%= comments.get(j).getId()%>">
-	      <input onclick="likeComments(<%=likeCommentID%>)" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
-	       <p id="likeCommentID<%=likeCommentID++%>"><%= comments.get(j).getLikes() %></p>
-      </form>
-      
-      <div id="commentID">
-      		  <form action="comment" method="post">
-              	 <input id="commentID<%=commentID %>" contenteditable="true" class="w3-border w3-padding" name="text" required>
-              	  <input type="hidden" name="currentPost" value="<%= posts.get(i).getId()%>">
-              	 <br>
-              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(<%=i %>, <%=posts.get(i).getId()%>, <%=commentID++%>, <%= comments.get(j).getId()%>)"> 
-              </form>
-              </div>
-	  </div>
-	  
-      <%}} %>
-      
+      <c:forEach var="post" items="${ posts }">
+	      <div id="postId${ post.getId() }" class="w3-container w3-card w3-white w3-round w3-margin"><br>
+	        <h4>${ post.getUser() }</h4><br>
+	        <!-- -=============POST IMAGE================- -->
+	        <img src="getPic?postId=${ post.getId() }" class="w3-left w3-margin-right" height="50%" width="50%" alt=""> 
+	        <hr class="w3-clear">
+	        <p>${ post.getText() }</p>
+	          <div class="w3-row-padding" style="margin:0 -16px">
+		      </div>
+		   <form method="post" action="likePost">
+		      <input type="hidden" id="like${ post.getId() }" value="${ post.getId() }">
+		      <input onclick="likePosts(${ post.getId() })" type="button"class="w3-button w3-theme-d1 w3-margin-bottom" class="fa fa-thumbs-up" value="Like">
+		      <p id="likeID${ post.getId() }">${ post.getLikes() }</p>
+	      </form>
+	      <c:forEach var="comment" items="${ post.getComments() }">
+		      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+		        <h3>${ comment.getUser() }</h3><br>
+		        
+		        <p>${ comment.getText() }</p>
+		      
+		    <c:forEach var="childComment" items="${ comment.getComments() }">
+			      <div class="w3-container w3-card w3-white w3-round w3-margin">
+			        <h4>${ childComment.getUser() }</h4>
+			        <p>${ childComment.getText() }</p>
+			         <form method="post" action="likeComment">
+				      <input type="hidden" id="likeComment${ childComment.getId() }" value="${ childComment.getId() }">
+				      <input onclick="likeComments(${ childComment.getId() })" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
+				      <p id="likeCommentID${ childComment.getId() }">${ childComment.getLikes() }</p>
+			      </form>
+				  </div>
+			</c:forEach>
+		 
+	        <form method="post" action="likeComment">
+		      <input type="hidden" id="likeComment${ comment.getId() } }" value="${ comment.getId() }">
+		      <input onclick="likeComments(${ comment.getId() })" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
+		       <p id="likeCommentID${ comment.getId() }">${ comment.getLikes() }</p>
+	      </form>
+	      
+	      <div id="commentID">
+	      		  <form action="comment" method="post">
+	              	 <input id="commentID${ comment.getId() }>" contenteditable="true" class="w3-border w3-padding" name="text" required>
+	              	  <input type="hidden" name="currentPost" value="${ post.getId() }">
+	              	 <br>
+	              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(${ post.getId() }, ${ post.getId() }, ${ comment.getId() }, ${ comment.getId() })"> 
+	              </form>
+	              </div>
+		  </div>
+	 	  </c:forEach>
       		<div id="commentID">
       		  <form action="comment" method="post">
-              	 <input id="commentID<%=commentID %>" contenteditable="true" class="w3-border w3-padding" name="text" required>
-              	  <input type="hidden" name="currentPost" value="<%= posts.get(i).getId()%>">
+              	 <input id="commentID0" contenteditable="true" class="w3-border w3-padding" name="text" required>
+              	  <input type="hidden" name="currentPost" value="${ post.getId() }">
               	 <br>
-              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(<%=i %>, <%=posts.get(i).getId()%>, <%=commentID++%>)"> 
+              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(${ post.getId() }, ${ post.getId() }, 0)"> 
               </form>
               </div>
          </div> 
-      <%}} %>
+          </c:forEach>
     <!-- End Middle Column -->
     </div>
     
@@ -258,9 +194,10 @@ function follow() {
 	  }
 }
 //addPost
-var likeCommentId = <%= likeCommentID+1%>;
-var comment_id = <%= commentID+1%>;
-var like_id = <%= i+1%>;
+var likeCommentId =  -1;
+var comment_id =  -1;
+var like_id =  -1;
+
 function addPost(){
 	var flag = true;
 	var p = document.getElementById('middleColumnId');
@@ -284,6 +221,7 @@ function addPost(){
     	     console.log('Error: ', error);
     	   };
     	}
+
     getBase64(file);
     if(file == null){
     	send(data);
@@ -303,8 +241,8 @@ function addPost(){
 			    var text = result.text;
 			    var postId = result.id;
 			    var likes = result.likes;
-			    var likeId = like_id++;
-			    var commentId = comment_id++;
+			    var likeId = like_id--;
+			    var commentId = comment_id--;
 			    
 			    var imageElement = "<img src=\"getPic?postId="+postId+"\" class=\"w3-left w3-margin-right\" height=\"50%\" width=\"50%\" alt=\"\">";			    
 			    newElement.innerHTML = "<br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><br>"+imageElement+"<hr class=\"w3-clear\"><p>"+text+"</p><div class=\"w3-row-padding\" style=\"margin:0 -16px\"></div><form method=\"post\" action=\"likePost\"><input type=\"hidden\" id=\"like"+likeId+"\" value=\""+postId+"\"><input onclick=\"likePosts("+likeId+")\" type=\"button\"class=\"w3-button w3-theme-d1 w3-margin-bottom\" class=\"fa fa-thumbs-up\" value=\"Like\"><p id=\"likeID"+likeId+"\">"+likes+"</p></form></div><form action=\"comment\" method=\"post\"><input id=\"commentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment("+likeId+", "+postId+", "+commentId+")\"></form>";
@@ -337,13 +275,17 @@ function addComment(a, b, c, d){
 			var text = result.text;
 			var id = result.id;
 			var likes = result.likes;
-			var commentId = likeCommentId++;
+			var commentId = likeCommentId--;
+			var commentElementId = commentId++;
+			
+		//	var commentElement = "<div id=\"commentID\"><form action=\"comment\" method=\"post\"><input id=\"commentID"+commentElementId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+b+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment("+a+", "+b+", "+c+", "+d+")\"></form></div></div>";
 			
 			newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+id+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form>";
 			p.insertBefore(newElement, p.lastChild.previousSibling);
 		}
 	}
 }
+
 //likeComment
 function likeComments(a){
 	var like = document.getElementById("likeCommentID"+a);
@@ -374,13 +316,14 @@ function likePosts(a){
 		}
 	}
 }
+
 //search
 $(document).ready(function() {
     $(function() {
         $("#search").autocomplete({     
             source : function(request, response) {
               $.ajax({
-                   url : "searchAutoComplete",
+                   url : "searchServlet",
                    type : "GET",
                    data : {
                           term : request.term
