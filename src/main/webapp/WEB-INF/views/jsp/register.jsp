@@ -84,7 +84,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 	            </tr>
 	           </table>
 	           <button style="margin:auto;display:block" type="submit" class="w3-button w3-theme">Register</button><br>
-	           <a href="login.jsp">Already have an account? Click here to login.</a>
+	           <a href="login">Already have an account? Click here to login.</a>
 	      </form>
        </div> 
     <!-- End Middle Column -->

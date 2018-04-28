@@ -60,15 +60,15 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 		      <table align="center">
 		      	<tr>
 	              	<td>Username:</td>
-	              	<td><input type="text" class="w3-border w3-padding" name="username" value="zdravko91" required></td>
+	              	<td><input type="text" class="w3-border w3-padding" name="username" value="nedelu" required></td>
 	            </tr>
 	            <tr>
 	              	<td>Password:</td>
-	              	<td><input type="password" class="w3-border w3-padding" name="password" value="Zdravko123!@" required></td>
+	              	<td><input type="password" class="w3-border w3-padding" name="password" value="Nedelu123!@" required></td>
 	            </tr>
 	           </table>
 	           <button style="margin:auto;display:block" type="submit" class="w3-button w3-theme">Login</button><br>
-	           <a href="register.jsp">Don't have an account? Click here to register.</a>
+	           <a href="register">Don't have an account? Click here to register.</a>
 	      </form>
        </div> 
     <!-- End Middle Column -->

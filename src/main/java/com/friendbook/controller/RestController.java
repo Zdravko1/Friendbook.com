@@ -130,8 +130,6 @@ public class RestController {
 		}
 	}
 	
-	
-	
 	private static void decoder(String base64Image, File f) {
 		try (FileOutputStream imageOutFile = new FileOutputStream(f)) {
 			byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(base64Image);

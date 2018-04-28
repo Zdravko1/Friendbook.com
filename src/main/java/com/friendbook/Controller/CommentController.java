@@ -25,8 +25,8 @@ public class CommentController {
 	private CommentDao commentDao;
 
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
-	public void comment(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		User user = (User) session.getAttribute("user");
+	public void comment(HttpServletRequest request, HttpServletResponse response) {
+		User user = (User) request.getSession().getAttribute("user");
 		long postId = Long.parseLong(request.getParameter("currentPost"));
 		Long commentId = null;
 		if (!request.getParameter("currentComment").equals("null")) {
@@ -34,6 +34,7 @@ public class CommentController {
 		}
 		Comment comment = new Comment(user.getId(), postId, commentId, request.getParameter("text"));
 		try {
+	
 			commentDao.addComment(comment);
 
 			String json = new Gson().toJson(commentDao.getLastCommentByUserId(user.getId()));
@@ -67,7 +68,7 @@ public class CommentController {
 				resp.getWriter().print(commentDao.getLikesByID(commentId));
 
 			}
-		} catch (SQLException e) {
+		} catch (SQLException | IOException e) {
 			System.out.println("SQL Bug: " + e.getMessage());
 		}
 	}
