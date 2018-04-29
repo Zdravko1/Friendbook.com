@@ -137,10 +137,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 			</c:forEach>
 		 
 	        <form method="post" action="likeComment">
-		      <input type="hidden" id="likeComment${ comment.getId() } }" value="${ comment.getId() }">
+		      <input type="hidden" id="likeComment${ comment.getId() }" value="${ comment.getId() }">
 		      <input onclick="likeComments(${ comment.getId() })" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
 		       <p id="likeCommentID${ comment.getId() }">${ comment.getLikes() }</p>
-	      </form>
+	     </form>
 	      
 	      <div id="commentID">
 	      		  <form action="comment" method="post">
@@ -154,7 +154,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 	 	  </c:forEach>
       		<div id="commentID">
       		  <form action="comment" method="post">
-              	 <input id="commentID0" contenteditable="true" class="w3-border w3-padding" name="text" required>
+              	 <input id="commentID" contenteditable="true" class="w3-border w3-padding" name="text" required>
               	  <input type="hidden" name="currentPost" value="${ post.getId() }">
               	 <br>
               	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(${ post.getId() }, ${ post.getId() }, 0)"> 

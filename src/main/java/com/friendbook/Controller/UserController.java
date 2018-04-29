@@ -43,8 +43,11 @@ public class UserController {
 		if(session.isNew()) {
 			return "login";
 		}
-		try {
+		try {	
 			User user = (User) session.getAttribute("user");
+			if(user == null) {
+				return "login";
+			}
 			List<Post> posts = userDao.getPostsByUserID(user.getId());
 			model.addAttribute("posts", posts);
 			return "index";
@@ -74,8 +77,8 @@ public class UserController {
 			System.out.println("Exception: "+ e.getMessage());
 			return "error";
 		} catch (Exception e) {
-			System.out.println("Some error occured: " + e.getMessage());
 			e.printStackTrace();
+			System.out.println("Some error occured: " + e.getMessage());
 			return "error";
 		}
 	}
