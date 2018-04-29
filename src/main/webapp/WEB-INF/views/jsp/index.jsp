@@ -64,6 +64,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-container">
         <h4 class="w3-center">${ !visit ? "MyProfile" : "Profile" }
         <h4 class="w3-center">${ !visit ? sessionScope.user : visitedUser }
+        <br>
          <c:if test="${ visit }">
          	<button id="follow" name="followedId" onclick="follow()" value="${ visitedUser.getId() }" class="w3-button w3-theme">${ visitedUser.isFollowed() ? "Followed" : "Follow" }</button>
          </c:if>

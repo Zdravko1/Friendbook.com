@@ -22,6 +22,7 @@ import com.friendbook.model.user.User;
 import com.friendbook.model.user.UserDao;
 import com.google.gson.Gson;
 
+
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
 	
@@ -50,13 +51,19 @@ public class RestController {
 	}
 	
 	@RequestMapping(value="/follow", method = RequestMethod.POST)
-	@ResponseBody
 	public String followUser(HttpSession session, HttpServletRequest request) {
 		User user = (User) session.getAttribute("user");
 		long followedId = Long.parseLong(request.getParameter("followedId"));
 		try {
-			userDao.followUser(user, followedId);
-			return userDao.isFollower(user, followedId) ? "Followed" : "Follow";
+			//check if the current user is following the one who is visited by him
+			if(!userDao.isFollower(user, followedId)) {
+				//if not then follow him and switch the button to "Followed"
+				userDao.followUser(user, followedId);
+				return new Gson().toJson("Followed");
+			}
+			//else unfollow him and switch the button name
+			userDao.unfollowUser(user, followedId);
+			return new Gson().toJson("Follow");
 		} catch (Exception e) {
 			System.out.println("Bug: " + e.getMessage());
 			return "error";
@@ -90,10 +97,9 @@ public class RestController {
 	public String post(HttpServletRequest request) {
 		User user = (User)request.getSession().getAttribute("user");
 		Post post = null;
-		//test
+		String path = null;
 		try {
 			String image = request.getParameter("file");
-			System.out.println(image);
 			if(image != null) {
 				image = image.split(",")[1].replaceAll(" ", "+");
 				System.out.println(image);
@@ -107,18 +113,12 @@ public class RestController {
 				
 				decoder(image, file);
 				
-				post = new Post(user, (String)request.getParameter("text"), file.getAbsolutePath());
-			} else {
-				post = new Post(user, (String)request.getParameter("text"), null);
+				path = file.getAbsolutePath();
 			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		try {
+			post = new Post(user, (String)request.getParameter("text"), path);
+
 			postDao.addPost(post);
 			System.out.println("Added post to database.");
-			
 			return new Gson().toJson(userDao.getLastPostByUserId(user.getId()));
 		} catch (SQLException e) {
 			e.printStackTrace();
