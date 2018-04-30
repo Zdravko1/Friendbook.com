@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.friendbook.model.post.Post;
 import com.friendbook.model.post.PostDao;
@@ -34,7 +33,6 @@ public class RestController {
 	private PostDao postDao;
 
 	@RequestMapping(value="/searchAutoComplete", method = RequestMethod.GET)
-	@ResponseBody
 	public List<String> searchAutoComplete(HttpServletResponse response, HttpServletRequest request) {
 		  response.setContentType("application/json");
           try {
@@ -71,7 +69,6 @@ public class RestController {
 	}
 	
 	@RequestMapping(value="/likePost", method = RequestMethod.POST)
-	@ResponseBody
 	public Integer likePost(HttpSession session, HttpServletRequest request) {
 		int id = Integer.parseInt(request.getParameter("like"));
 		System.out.println(id);
@@ -93,7 +90,6 @@ public class RestController {
 	}
 	
 	@RequestMapping(value="/post", method = RequestMethod.POST)
-	@ResponseBody
 	public String post(HttpServletRequest request) {
 		User user = (User)request.getSession().getAttribute("user");
 		Post post = null;

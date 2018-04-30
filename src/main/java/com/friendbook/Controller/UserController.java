@@ -84,8 +84,9 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/register", method = RequestMethod.POST)
-	public String register(HttpServletRequest request) {
+	public String register(HttpServletRequest request) throws WrongCredentialsException {
 		String username = request.getParameter("username");
+		System.out.println(username);
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		String password2 = request.getParameter("confirm password");
@@ -93,7 +94,8 @@ public class UserController {
 		String lastName = request.getParameter("lastName");
 		
 		if(password.compareTo(password2) !=0 ) {
-			System.out.println("Passwords doesn't match");
+			System.out.println("Passwords don't match");
+			throw new WrongCredentialsException("Passwords don't match.");
 		}
 		
 		try {
@@ -160,6 +162,11 @@ public class UserController {
 			System.out.println("SQL Bug: " + e.getMessage());
 			return "error";
 		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public String index() {
+		return "login";
 	}
 	
 }

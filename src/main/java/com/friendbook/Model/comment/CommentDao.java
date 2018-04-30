@@ -70,7 +70,7 @@ public class CommentDao implements ICommentDao {
 		try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, comment.getText());
 			statement.setLong(2, comment.getPost());
-			statement.setLong(3, comment.getParentComment() == null ? Types.NULL : comment.getParentComment());
+			statement.setObject(3, comment.getParentComment(), Types.INTEGER);
 			statement.setLong(4, comment.getUserId());
 
 			statement.executeUpdate();

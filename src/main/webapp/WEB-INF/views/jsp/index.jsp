@@ -119,7 +119,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 		      <p id="likeID${ post.getId() }">${ post.getLikes() }</p>
 	      </form>
 	      <c:forEach var="comment" items="${ post.getComments() }">
-		      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+		      <div id="commentID${ comment.getId() }" class="w3-container w3-card w3-white w3-round w3-margin"><br>
 		        <h3>${ comment.getUser() }</h3><br>
 		        
 		        <p>${ comment.getText() }</p>
@@ -141,23 +141,20 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 		      <input onclick="likeComments(${ comment.getId() })" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
 		       <p id="likeCommentID${ comment.getId() }">${ comment.getLikes() }</p>
 	     </form>
-	      
-	      <div id="commentID">
-	      		  <form action="comment" method="post">
-	              	 <input id="commentID${ comment.getId() }>" contenteditable="true" class="w3-border w3-padding" name="text" required>
-	              	  <input type="hidden" name="currentPost" value="${ post.getId() }">
-	              	 <br>
-	              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(${ post.getId() }, ${ post.getId() }, ${ comment.getId() }, ${ comment.getId() })"> 
-	              </form>
-	              </div>
+      		  <form action="comment" method="post">
+              	 <input id="commentCommentID${ comment.getId() }" contenteditable="true" class="w3-border w3-padding" name="text" required>
+              	  <input type="hidden" name="currentPost" value="${ post.getId() }">
+              	 <br>
+              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment('commentCommentID', ${ post.getId() }, ${ comment.getId() }, ${ comment.getId() })"> 
+              </form>
 		  </div>
 	 	  </c:forEach>
       		<div id="commentID">
       		  <form action="comment" method="post">
-              	 <input id="commentID" contenteditable="true" class="w3-border w3-padding" name="text" required>
+              	 <input id="postCommentID${ post.getId() }" contenteditable="true" class="w3-border w3-padding" name="text" required>
               	  <input type="hidden" name="currentPost" value="${ post.getId() }">
               	 <br>
-              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(${ post.getId() }, ${ post.getId() }, 0)"> 
+              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment('postCommentID', ${ post.getId() }, ${ post.getId() })"> 
               </form>
               </div>
          </div> 
@@ -178,6 +175,50 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 </footer>
  
 <script>
+//to help with asynchronous adding of elements
+var likeCommentId =  -1;
+var comment_id =  -1;
+var like_id =  -1;
+//addComment
+function addComment(nameId, postId, id, currentCommentId){
+	var p = document.getElementById('postId'+id);
+	var newElement = document.createElement("div");
+	newElement.setAttribute('id', 'commentID' + likeCommentId);
+	newElement.setAttribute('class', 'w3-container w3-card w3-white w3-round w3-margin');
+	
+	var currentComment = currentCommentId;
+	if (typeof currentComment === 'undefined') {
+		currentComment = null;
+	}
+	var request = new XMLHttpRequest();
+	request.open('POST', 'comment', true);
+	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	//if(currentComment == null){
+		request.send("text=" + document.getElementById(nameId+id).value + "&currentPost=" + postId + "&currentComment=" + currentComment);
+	//} else {
+	//	request.send("text=" + document.getElementById(nameId+id).value + "&currentPost=" + postId + "&currentComment=" + currentComment);
+	//}
+		
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			var result = this.responseText;
+			result = JSON.parse(result);
+			
+			var user = result.user.firstName + ' ' + result.user.lastName;
+			var text = result.text;
+			var idComment = result.id;
+			var likes = result.likes;
+			var commentId = likeCommentId--; 
+			if(currentComment == null){
+				newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+idComment+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form><form action=\"comment\" method=\"post\"><input id=\"commentCommentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment('commentCommentID', "+postId+", "+commentId+", "+idComment+")\"></form>";
+				p.insertBefore(newElement, p.lastChild.previousSibling);				
+			} else {
+				newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+idComment+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form>";
+				document.getElementById('commentID' + id).appendChild(newElement);
+			}
+		}
+	}
+}
 //follow
 function follow() {
 	var element = document.getElementById("follow");
@@ -195,10 +236,6 @@ function follow() {
 	  }
 }
 //addPost
-var likeCommentId =  -1;
-var comment_id =  -1;
-var like_id =  -1;
-
 function addPost(){
 	var flag = true;
 	var p = document.getElementById('middleColumnId');
@@ -246,47 +283,13 @@ function addPost(){
 			    var commentId = comment_id--;
 			    
 			    var imageElement = "<img src=\"getPic?postId="+postId+"\" class=\"w3-left w3-margin-right\" height=\"50%\" width=\"50%\" alt=\"\">";			    
-			    newElement.innerHTML = "<br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><br>"+imageElement+"<hr class=\"w3-clear\"><p>"+text+"</p><div class=\"w3-row-padding\" style=\"margin:0 -16px\"></div><form method=\"post\" action=\"likePost\"><input type=\"hidden\" id=\"like"+likeId+"\" value=\""+postId+"\"><input onclick=\"likePosts("+likeId+")\" type=\"button\"class=\"w3-button w3-theme-d1 w3-margin-bottom\" class=\"fa fa-thumbs-up\" value=\"Like\"><p id=\"likeID"+likeId+"\">"+likes+"</p></form></div><form action=\"comment\" method=\"post\"><input id=\"commentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment("+likeId+", "+postId+", "+commentId+")\"></form>";
+			    newElement.innerHTML = "<br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><br>"+imageElement+"<hr class=\"w3-clear\"><p>"+text+"</p><div class=\"w3-row-padding\" style=\"margin:0 -16px\"></div><form method=\"post\" action=\"likePost\"><input type=\"hidden\" id=\"like"+likeId+"\" value=\""+postId+"\"><input onclick=\"likePosts("+likeId+")\" type=\"button\"class=\"w3-button w3-theme-d1 w3-margin-bottom\" class=\"fa fa-thumbs-up\" value=\"Like\"><p id=\"likeID"+likeId+"\">"+likes+"</p></form></div><form action=\"comment\" method=\"post\"><input id=\"postCommentID"+likeId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment('postCommentID', "+postId+", "+likeId+")\"></form>";
+			    console.log(newElement);
 			    p.insertBefore(newElement, p.childNodes[2]);
 			}
 		}
     }
 }
-//addComment
-function addComment(a, b, c, d){
-	var p = document.getElementById('postId'+a);
-	var newElement = document.createElement("div");
-	newElement.setAttribute('id', 'comment');
-	newElement.setAttribute('class', 'w3-container w3-card w3-white w3-round w3-margin');
-	
-	if (typeof d === 'undefined') {
-		var d = null;
-	}
-	
-	var request = new XMLHttpRequest();
-	request.open('POST', 'comment', true);
-	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	request.send("text=" + document.getElementById("commentID"+c).value + "&currentPost=" + b + "&currentComment=" + d);
-	request.onreadystatechange = function(){
-		if(this.readyState == 4 && this.status == 200){
-			var result = this.responseText;
-			result = JSON.parse(result);
-			
-			var user = result.user.firstName + ' ' + result.user.lastName;
-			var text = result.text;
-			var id = result.id;
-			var likes = result.likes;
-			var commentId = likeCommentId--;
-			var commentElementId = commentId++;
-			
-		//	var commentElement = "<div id=\"commentID\"><form action=\"comment\" method=\"post\"><input id=\"commentID"+commentElementId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+b+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment("+a+", "+b+", "+c+", "+d+")\"></form></div></div>";
-			
-			newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+id+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form>";
-			p.insertBefore(newElement, p.lastChild.previousSibling);
-		}
-	}
-}
-
 //likeComment
 function likeComments(a){
 	var like = document.getElementById("likeCommentID"+a);

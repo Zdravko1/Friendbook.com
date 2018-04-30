@@ -60,7 +60,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 		      <table align="center">
 		      	<tr>
 	              	<td>Username:</td>
-	              	<td><input type="text" class="w3-border w3-padding" name="username" value="zdravko91" required></td>
+	              	<td><input type="text" class="w3-border w3-padding" name="username" value="zdravko92" required></td>
 	            </tr>
 	            <tr>
 	              	<td>Password:</td>

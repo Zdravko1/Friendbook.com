@@ -8,10 +8,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 
+@Component
+@Scope("prototype")
 public class User {
 
 	@Autowired
@@ -131,7 +135,7 @@ public class User {
 	}
 
 	public void increaseFollowersByOne() {
-		this.followers += 1;
+		this.followers++;
 	}
 
 	public void addToFollowing(User u) {

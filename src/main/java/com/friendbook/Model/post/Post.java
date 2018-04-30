@@ -73,7 +73,7 @@ public class Post implements Serializable{
 
 	public void setText(String text) {
 		if (text == null || text.trim().isEmpty()) {
-			throw new IllegalArgumentException("Invalid comment");
+			throw new IllegalArgumentException("Invalid text");
 		}
 		this.text = text;
 	}
