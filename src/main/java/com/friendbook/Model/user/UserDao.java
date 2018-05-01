@@ -159,9 +159,9 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public User getUserByUsername(String username) throws SQLException, WrongCredentialsException {
-		String query = "SELECT * FROM users WHERE username = ?";
-		try (PreparedStatement ps = connection.prepareStatement(query)) {
+	public User getUserByUsername(String username) throws SQLException {
+		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE username = ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			rs.next();

@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
-
 
 public class User {
 
@@ -33,9 +33,6 @@ public class User {
 	private String lastName;
 	private int followers;
 	private boolean isFollowed; //using it to show/hide follow button, will remove later if i find better way to do it.
-	
-	private Set<User> following; //users who are followed by this user
-	private List<Post> posts = new ArrayList<>();
 
 	public User(String username, String password, String email, String firstName, String lastName) throws SQLException, WrongCredentialsException {
 		this.setUsername(username);
@@ -71,16 +68,8 @@ public class User {
 		return lastName;
 	}
 	
-	public LinkedList<Post> getPosts() {
-		return (LinkedList<Post>) Collections.unmodifiableList(this.posts);
-	}
-
 	public int getFollowers() {
 		return followers;
-	}
-
-	public Set<User> getFollowing() {
-		return Collections.unmodifiableSet(following);
 	}
 
 	public long getId() {
@@ -127,16 +116,6 @@ public class User {
 			this.lastName = lastName;
 		}
 	}
-
-	public void increaseFollowersByOne() {
-		this.followers++;
-	}
-
-	public void addToFollowing(User u) {
-		if(u != null) {
-			this.following.add(u);
-		}
-	}
 	
 	public void setFollowed(boolean isFollowed) {
 		this.isFollowed = isFollowed;
@@ -157,20 +136,8 @@ public class User {
 		throw new WrongCredentialsException("Invalid email");
 	}
 	
-//	private boolean userNameCheck(String name) throws WrongCredentialsException, SQLException {
-//		if(name != null && name.length() >= User.MIN_NAME_LENGTH && name.length() <= User.MAX_NAME_LENGTH){
-//			userDao.existingUserNameCheck(name);
-//			return true;
-//		}
-//		throw new WrongCredentialsException("Incorrect username");
-//	}
-	
 	@Override
 	public String toString() {
 		return firstName + " " + lastName;
-	}
-
-	public void addPost(Post post) {
-		this.posts.add(post);
 	}
 }

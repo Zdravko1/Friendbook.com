@@ -35,7 +35,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
   <a  href="reloadPosts" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right" title="Home"></i>Home</a>
   <a href="reloadFeed" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Feed"><i class="fa fa-globe"></i></a>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="My Account"><i class="fa fa-user"></i></a>
-  <a onclick="logout()" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
+  <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
   
   <form action="search" method="post">
   	<button type="submit" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Search</button>
@@ -121,38 +121,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 		      <input onclick="likePosts(${ post.getId() })" type="button"class="w3-button w3-theme-d1 w3-margin-bottom" class="fa fa-thumbs-up" value="Like">
 		      <p id="likeID${ post.getId() }">${ post.getLikes() }</p>
 	      </form>
-	      <c:forEach var="comment" items="${ post.getComments() }">
-		      <div id="commentID${ comment.getId() }" class="w3-container w3-card w3-white w3-round w3-margin"><br>
-		        <h3>${ comment.getUser() }</h3><br>
-		        
-		        <p>${ comment.getText() }</p>
-		      
-		    <c:forEach var="childComment" items="${ comment.getComments() }">
-			      <div class="w3-container w3-card w3-white w3-round w3-margin">
-			        <h4>${ childComment.getUser() }</h4>
-			        <p>${ childComment.getText() }</p>
-			         <form method="post" action="likeComment">
-				      <input type="hidden" id="likeComment${ childComment.getId() }" value="${ childComment.getId() }">
-				      <input onclick="likeComments(${ childComment.getId() })" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
-				      <p id="likeCommentID${ childComment.getId() }">${ childComment.getLikes() }</p>
-			      </form>
-				  </div>
-			</c:forEach>
-		 
-	        <form method="post" action="likeComment">
-		      <input type="hidden" id="likeComment${ comment.getId() }" value="${ comment.getId() }">
-		      <input onclick="likeComments(${ comment.getId() })" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
-		       <p id="likeCommentID${ comment.getId() }">${ comment.getLikes() }</p>
-	     </form>
-      		  <form action="comment" method="post">
-              	 <input id="commentCommentID${ comment.getId() }" contenteditable="true" class="w3-border w3-padding" name="text" required>
-              	  <input type="hidden" name="currentPost" value="${ post.getId() }">
-              	 <br>
-              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment('commentCommentID', ${ post.getId() }, ${ comment.getId() }, ${ comment.getId() })"> 
-              </form>
-		  </div>
-	 	  </c:forEach>
-      		<div id="commentID">
+	      <div id="commentID">
       		  <form action="comment" method="post">
               	 <input id="postCommentID${ post.getId() }" contenteditable="true" class="w3-border w3-padding" name="text" required>
               	  <input type="hidden" name="currentPost" value="${ post.getId() }">
@@ -160,7 +129,39 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
               	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment('postCommentID', ${ post.getId() }, ${ post.getId() })"> 
               </form>
               </div>
-         </div> 
+          
+			      <c:forEach var="comment" items="${ post.getComments() }">
+				      <div id="commentID${ comment.getId() }" class="w3-container w3-card w3-white w3-round w3-margin"><br>
+				        <h3>${ comment.getUser() }</h3><br>
+				        
+				        <p>${ comment.getText() }</p>
+				      
+			        <form method="post" action="likeComment">
+				      <input type="hidden" id="likeComment${ comment.getId() }" value="${ comment.getId() }">
+				      <input onclick="likeComments(${ comment.getId() })" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
+				       <p id="likeCommentID${ comment.getId() }">${ comment.getLikes() }</p>
+			     </form>
+		      		  <form action="comment" method="post">
+		              	 <input id="commentCommentID${ comment.getId() }" contenteditable="true" class="w3-border w3-padding" name="text" required>
+		              	  <input type="hidden" name="currentPost" value="${ post.getId() }">
+		              	 <br>
+		              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment('commentCommentID', ${ post.getId() }, ${ comment.getId() }, ${ comment.getId() })"> 
+		              </form>
+		               
+					    <c:forEach var="childComment" items="${ comment.getComments() }">
+						      <div class="w3-container w3-card w3-white w3-round w3-margin">
+						        <h4>${ childComment.getUser() }</h4>
+						        <p>${ childComment.getText() }</p>
+						         <form method="post" action="likeComment">
+							      <input type="hidden" id="likeComment${ childComment.getId() }" value="${ childComment.getId() }">
+							      <input onclick="likeComments(${ childComment.getId() })" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
+							      <p id="likeCommentID${ childComment.getId() }">${ childComment.getLikes() }</p>
+						      </form>
+							  </div>
+						</c:forEach>
+						</div>
+			 	  </c:forEach>
+			 	  </div>
           </c:forEach>
     <!-- End Middle Column -->
     </div>
@@ -185,6 +186,7 @@ var like_id =  -1;
 //addComment
 function addComment(nameId, postId, id, currentCommentId){
 	var p = document.getElementById('postId'+id);
+	var commentElement = document.getElementById('commentID' + id);
 	var newElement = document.createElement("div");
 	newElement.setAttribute('id', 'commentID' + likeCommentId);
 	newElement.setAttribute('class', 'w3-container w3-card w3-white w3-round w3-margin');
@@ -209,10 +211,10 @@ function addComment(nameId, postId, id, currentCommentId){
 			var commentId = likeCommentId--; 
 			if(currentComment == null){
 				newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+idComment+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form><form action=\"comment\" method=\"post\"><input id=\"commentCommentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment('commentCommentID', "+postId+", "+commentId+", "+idComment+")\"></form>";
-				p.insertBefore(newElement, p.lastChild.previousSibling);				
+				p.appendChild(newElement);//, p.lastChild.previousSibling);				
 			} else {
 				newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+idComment+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form>";
-				document.getElementById('commentID' + id).appendChild(newElement);
+				commentElement.appendChild(newElement);
 			}
 		}
 	}
@@ -339,19 +341,6 @@ $(document).ready(function() {
      });
   });
 })
-
-//logout
-function logout(){
-    $.ajax({
-        url: "logout",
-        type: "GET",
-    }).then(function (data) {
-        if(data==="logout"){
-            window.location.replace("login");
-        }
-    });
-}
-
 </script>
 
 </body>

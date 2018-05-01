@@ -1,5 +1,9 @@
 package com.friendbook.controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,18 +17,60 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 import com.friendbook.model.post.PostDao;
 import com.friendbook.model.user.User;
 import com.friendbook.model.user.UserDao;
+import com.google.gson.Gson;
 
 @Controller
 public class PostController {
 
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private PostDao postDao;
+	
+	@RequestMapping(value="/post", method = RequestMethod.POST)
+	@ResponseBody
+	public String post(HttpServletRequest request) {
+		User user = (User)request.getSession().getAttribute("user");
+		Post post = null;
+		String path = null;
+		try {
+			String image = request.getParameter("file");
+			if(image != null) {
+				image = image.split(",")[1].replaceAll(" ", "+");
+				System.out.println(image);
+				String imageName = "image"+image.substring(0, 10)+".jpg";
+				File file = new File("D:\\photos\\" + user.getUsername());
+				if(!file.exists()) {
+					file.mkdirs();
+				}
+				file = new File("D:\\photos\\"+user.getUsername()+"\\"+imageName);
+				file.createNewFile();
+				
+				decoder(image, file);
+				
+				path = file.getAbsolutePath();
+			}
+			post = new Post(user, (String)request.getParameter("text"), path);
+
+			postDao.addPost(post);
+			System.out.println("Added post to database.");
+			return new Gson().toJson(userDao.getLastPostByUserId(user.getId()));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch(Exception e) {
+			System.out.println("Bug2: " );
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	@Autowired
 	private PostDao postDao;
@@ -95,4 +141,15 @@ public class PostController {
 		return posts;
 	}
 	
+	private static void decoder(String base64Image, File f) {
+		try (FileOutputStream imageOutFile = new FileOutputStream(f)) {
+			byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(base64Image);
+			imageOutFile.write(btDataFile);
+			imageOutFile.flush();
+		} catch (FileNotFoundException e) {
+			System.out.println("Image not found" + e);
+		} catch (IOException ioe) {
+			System.out.println("Exception while reading the Image " + ioe);
+		}
+	}
 }
