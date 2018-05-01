@@ -47,11 +47,13 @@ public class UserController {
 			return "login";
 		}
 		try {	
-			List<Post> posts = userDao.getPostsByUserID(user.getId());
+			List<Post> posts = postDao.getPostsByUserID(user.getId());
 			model.addAttribute("posts", posts);
 			return "index";
 		} catch (SQLException e) {
 			System.out.println("SQL bug: " + e.getMessage());
+			return "error";
+		} catch (WrongCredentialsException e) {
 			return "error";
 		}
 	}
@@ -67,7 +69,7 @@ public class UserController {
 			//if successfull, get user
 			User user = userDao.getUserByUsername(username);
 			//get user's posts and put them in request
-			List<Post> posts = userDao.getPostsByUserID(user.getId());
+			List<Post> posts = postDao.getPostsByUserID(user.getId());
 			session.setAttribute("user", user);
 			model.addAttribute("posts", posts);
 			
@@ -81,6 +83,7 @@ public class UserController {
 			return "error";
 		}
 	}
+	
 	
 	@RequestMapping(value="/register", method = RequestMethod.POST)
 	public String register(HttpServletRequest request) throws WrongCredentialsException {
@@ -98,12 +101,7 @@ public class UserController {
 		}
 		
 		try {
-			User u = new User();
-			u.setUsername(username);
-			u.setPassword(password);
-			u.setEmail(email);
-			u.setFirstName(firstName);
-			u.setLastName(lastName);
+			User u = new User(username, password, email, firstName, lastName);
 			userDao.saveUser(u);
 
 			return "login";
@@ -156,10 +154,12 @@ public class UserController {
 			}
 			model.addAttribute("visit", true);
 			model.addAttribute("visitedUser", visitedUser);
-			model.addAttribute("posts", userDao.getPostsByUserID(visitedUser.getId()));
+			model.addAttribute("posts", postDao.getPostsByUserID(visitedUser.getId()));
 			return "index";
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());
+			return "error";
+		} catch (WrongCredentialsException e) {
 			return "error";
 		}
 	}

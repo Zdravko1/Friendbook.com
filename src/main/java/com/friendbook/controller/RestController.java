@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 import com.friendbook.model.post.PostDao;
 import com.friendbook.model.user.User;
@@ -80,12 +81,12 @@ public class RestController {
 			} else {
 				postDao.increasePostLikes(userId, likeId);
 			}
-			request.setAttribute("posts", userDao.getPostsByUserID(userId));
+			request.setAttribute("posts", postDao.getPostsByUserID(userId));
 			return postDao.getLikesByID(likeId);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println("SQL Bug: " + e.getMessage());
 			return null;
-		}
+		} 
 	}
 	
 	@RequestMapping(value="/post", method = RequestMethod.POST)

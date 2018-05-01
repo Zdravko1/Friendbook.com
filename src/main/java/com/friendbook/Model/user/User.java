@@ -14,8 +14,7 @@ import org.springframework.stereotype.Component;
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 
-@Component
-@Scope("prototype")
+
 public class User {
 
 	@Autowired
@@ -23,8 +22,8 @@ public class User {
 	
 	private static final String PASS_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
 	private static final String EMAIL_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-	private static final int MIN_NAME_LENGTH = 6;
-	private static final int MAX_NAME_LENGTH = 20;
+	static final int MIN_NAME_LENGTH = 6;
+	static final int MAX_NAME_LENGTH = 20;
 	
 	private long id;
 	private String username;
@@ -38,24 +37,19 @@ public class User {
 	private Set<User> following; //users who are followed by this user
 	private List<Post> posts = new ArrayList<>();
 
-	//TODO change later
-	public User() {
+	public User(String username, String password, String email, String firstName, String lastName) throws SQLException, WrongCredentialsException {
+		this.setUsername(username);
+		this.setPassword(password);
+		this.setEmail(email);
+		this.setFirstName(firstName);
+		this.setLastName(lastName);
 	}
 	
-	public User(String username, String password, String email, String firstName, String lastName) {
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
-	
-	public User(int id, String username, String password, String email, String firstName, String lastName) {
+	public User(int id, String username, String password, String email, String firstName, String lastName) throws SQLException, WrongCredentialsException {
 		this(username, password, email, firstName, lastName);
 		this.id = id;
 	}
-	
-	
+		
 	//getters
 	public String getUsername() {
 		return username;
@@ -105,9 +99,9 @@ public class User {
 	}
 	
 	public void setUsername(String username) throws SQLException, WrongCredentialsException {
-		if(userNameCheck(username)) {
+//		if(userNameCheck(username)) {
 			this.username = username;
-		}
+//		}
 	}
 
 	public void setPassword(String password) throws WrongCredentialsException {
@@ -163,13 +157,13 @@ public class User {
 		throw new WrongCredentialsException("Invalid email");
 	}
 	
-	private boolean userNameCheck(String name) throws WrongCredentialsException, SQLException {
-		if(name != null && name.length() >= User.MIN_NAME_LENGTH && name.length() <= User.MAX_NAME_LENGTH){
-			userDao.existingUserNameCheck(name);
-			return true;
-		}
-		throw new WrongCredentialsException("Incorrect username");
-	}
+//	private boolean userNameCheck(String name) throws WrongCredentialsException, SQLException {
+//		if(name != null && name.length() >= User.MIN_NAME_LENGTH && name.length() <= User.MAX_NAME_LENGTH){
+//			userDao.existingUserNameCheck(name);
+//			return true;
+//		}
+//		throw new WrongCredentialsException("Incorrect username");
+//	}
 	
 	@Override
 	public String toString() {

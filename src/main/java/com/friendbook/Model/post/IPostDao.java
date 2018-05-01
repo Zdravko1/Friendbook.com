@@ -1,7 +1,9 @@
 package com.friendbook.model.post;
 
 import java.sql.SQLException;
+import java.util.List;
 
+import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.user.User;
 
 
@@ -20,4 +22,6 @@ public interface IPostDao {
 	void addPost(Post post) throws SQLException;
 	
 	String getPostImageById(long postId) throws SQLException;
+	
+	List<Post> getPostsByUserID(long id) throws SQLException, WrongCredentialsException;
 }

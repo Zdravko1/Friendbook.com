@@ -10,6 +10,7 @@ import java.sql.Types;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 import com.friendbook.model.user.DBManager;
 import com.friendbook.model.user.User;
@@ -129,7 +130,7 @@ public class CommentDao implements ICommentDao {
 		return likes;
 	}
 
-	public Comment getLastCommentByUserId(long id) throws SQLException {
+	public Comment getLastCommentByUserId(long id) throws SQLException, WrongCredentialsException {
 		String query = "SELECT id, text, date, post_id, user_id FROM comments WHERE user_id = ? ORDER BY date DESC LIMIT 1 ";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);

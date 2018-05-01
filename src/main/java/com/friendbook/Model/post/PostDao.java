@@ -5,14 +5,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.friendbook.exceptions.WrongCredentialsException;
+import com.friendbook.model.comment.CommentDao;
 import com.friendbook.model.user.DBManager;
 import com.friendbook.model.user.User;
+import com.friendbook.model.user.UserDao;
 
 @Component
 public class PostDao implements IPostDao {
+	
+	
+	@Autowired
+	private UserDao userDao;
+	
+	@Autowired
+	private CommentDao commentDao;
 
 	private Connection connection;
 
@@ -82,6 +95,26 @@ public class PostDao implements IPostDao {
 
 			}
 		}
+	}
+	
+	@Override
+	public List<Post> getPostsByUserID(long id) throws SQLException, WrongCredentialsException {
+		ArrayList<Post> posts = new ArrayList<>();
+		String query = "SELECT id, description, date, image_video_path FROM posts WHERE user_id = ? ORDER BY date DESC";
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setLong(1, id);
+			ResultSet rs = ps.executeQuery();
+			User u = userDao.getByID(id);
+			while (rs.next()) {
+				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
+				p.setLikes(getLikesByID(p.getId()));
+				p.setDate(rs.getTimestamp("date").toLocalDateTime());
+				commentDao.getAndSetAllCommentsOfGivenPost(p);
+				posts.add(p);
+			}
+		}
+		System.out.println(posts);
+		return posts;
 	}
 
 	@Override
