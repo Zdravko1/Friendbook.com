@@ -63,7 +63,6 @@ public class UserDao implements IUserDao {
 
 	@Override
 	public void saveUser(User u) throws SQLException {
-		synchronized (u) {
 			try (PreparedStatement ps = connection.prepareStatement(
 					"INSERT INTO users(username, password, email, first_name, last_name) VALUES(?, ?, ?, ?, ?)")) {
 				ps.setString(1, u.getUsername());
@@ -74,7 +73,6 @@ public class UserDao implements IUserDao {
 				ps.setString(5, u.getLastName());
 				ps.executeUpdate();
 			}
-		}
 	}
 		
 	@Override
@@ -184,7 +182,7 @@ public class UserDao implements IUserDao {
 	
 	@Override
 	public User getUserByUsername(String username) throws SQLException {
-		String query = "SELECT * FROM users WHERE username = ?";
+		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE username = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();

@@ -78,8 +78,6 @@ public class PostDao implements IPostDao {
 			while (rs.next()) {
 				Post p = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription"),
 						user);
-				user.addPost(p);
-
 			}
 		}
 	}

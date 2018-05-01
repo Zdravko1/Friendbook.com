@@ -25,6 +25,7 @@ import com.friendbook.model.post.Post;
 import com.friendbook.model.post.PostDao;
 import com.friendbook.model.user.User;
 import com.friendbook.model.user.UserDao;
+import com.google.gson.Gson;
 
 @Controller
 public class UserController {
@@ -117,10 +118,9 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
-	@ResponseBody
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "logout";
+		return "login";
 	}
 	
 	@RequestMapping(value="/getPic", method = RequestMethod.GET)
@@ -140,6 +140,28 @@ public class UserController {
 			}
 		} catch (SQLException | IOException e) {
 			System.out.println("BUG: " + e.getMessage());
+		}
+	}
+	
+
+	@RequestMapping(value="/follow", method = RequestMethod.POST)
+	@ResponseBody
+	public String followUser(HttpSession session, HttpServletRequest request) {
+		User user = (User) session.getAttribute("user");
+		long followedId = Long.parseLong(request.getParameter("followedId"));
+		try {
+			//check if the current user is following the one who is visited by him
+			if(!userDao.isFollower(user.getId(), followedId)) {
+				//if not then follow him and switch the button to "Followed"
+				userDao.followUser(user.getId(), followedId);
+				return new Gson().toJson("Followed");
+			}
+			//else unfollow him and switch the button name
+			userDao.unfollowUser(user.getId(), followedId);
+			return new Gson().toJson("Follow");
+		} catch (Exception e) {
+			System.out.println("Bug: " + e.getMessage());
+			return "error";
 		}
 	}
 	
@@ -164,9 +186,4 @@ public class UserController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
-	public String index() {
-		return "login";
-	}
-	
 }

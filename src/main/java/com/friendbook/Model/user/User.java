@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
 
-@Component
-@Scope("prototype")
 public class User {
 
 	@Autowired
@@ -35,9 +34,6 @@ public class User {
 	private int followers;
 	private boolean isFollowed; //using it to show/hide follow button, will remove later if i find better way to do it.
 	
-	private Set<User> following; //users who are followed by this user
-	private List<Post> posts = new ArrayList<>();
-
 	//TODO change later
 	public User() {
 	}
@@ -77,16 +73,8 @@ public class User {
 		return lastName;
 	}
 	
-	public LinkedList<Post> getPosts() {
-		return (LinkedList<Post>) Collections.unmodifiableList(this.posts);
-	}
-
 	public int getFollowers() {
 		return followers;
-	}
-
-	public Set<User> getFollowing() {
-		return Collections.unmodifiableSet(following);
 	}
 
 	public long getId() {
@@ -133,16 +121,6 @@ public class User {
 			this.lastName = lastName;
 		}
 	}
-
-	public void increaseFollowersByOne() {
-		this.followers++;
-	}
-
-	public void addToFollowing(User u) {
-		if(u != null) {
-			this.following.add(u);
-		}
-	}
 	
 	public void setFollowed(boolean isFollowed) {
 		this.isFollowed = isFollowed;
@@ -174,9 +152,5 @@ public class User {
 	@Override
 	public String toString() {
 		return firstName + " " + lastName;
-	}
-
-	public void addPost(Post post) {
-		this.posts.add(post);
 	}
 }
