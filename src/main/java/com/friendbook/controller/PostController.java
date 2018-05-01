@@ -10,14 +10,22 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
@@ -33,6 +41,8 @@ public class PostController {
 	private UserDao userDao;
 	@Autowired
 	private PostDao postDao;
+	
+	
 	
 	@RequestMapping(value="/post", method = RequestMethod.POST)
 	@ResponseBody
@@ -71,10 +81,7 @@ public class PostController {
 			return null;
 		}
 	}
-	
-	@Autowired
-	private PostDao postDao;
-	
+
 	@RequestMapping(value="/reloadPosts", method = RequestMethod.GET)
 	public String reloadPosts(HttpSession session, Model model) {
 		try {
@@ -88,6 +95,27 @@ public class PostController {
 		} catch (WrongCredentialsException e) {
 			return "error";
 		}
+	}
+	
+	@RequestMapping(value="/likePost", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer likePost(HttpSession session, HttpServletRequest request) {
+		int likeId = Integer.parseInt(request.getParameter("like"));
+		long userId = ((User) session.getAttribute("user")).getId();
+		//check if this post was liked by the user before
+		//remove like if so or add a like
+		try {
+			if(userDao.isPostLiked(userId, likeId)) {
+				postDao.decreasePostLikes(userId, likeId);
+			} else {
+				postDao.increasePostLikes(userId, likeId);
+			}
+			request.setAttribute("posts", postDao.getPostsByUserID(userId));
+			return postDao.getLikesByID(likeId);
+		} catch (Exception e) {
+			System.out.println("SQL Bug: " + e.getMessage());
+			return null;
+		} 
 	}
 
 	@RequestMapping(value="/reloadFeed", method = RequestMethod.GET)

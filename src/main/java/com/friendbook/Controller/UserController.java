@@ -44,6 +44,7 @@ public class UserController {
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String getLoginPage(HttpSession session, Model model) {
 		User user = (User) session.getAttribute("user");
+		
 		if(session.isNew() || user == null) {
 			return "login";
 		}
@@ -57,6 +58,7 @@ public class UserController {
 		} catch (WrongCredentialsException e) {
 			return "error";
 		}
+		
 	}
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
@@ -184,6 +186,23 @@ public class UserController {
 		} catch (WrongCredentialsException e) {
 			return "error";
 		}
+	}
+	
+	@RequestMapping(value="/searchAutoComplete", method = RequestMethod.GET)
+	@ResponseBody
+	public String searchAutoComplete(HttpServletResponse response, HttpServletRequest request) {
+		  response.setContentType("application/json");
+          try {
+              String term = request.getParameter("term");
+              System.out.println("Data from ajax call " + term);
+
+              List<String> list = userDao.getUsersNamesStartingWith(term);
+              
+              return new Gson().toJson(list);
+          } catch (Exception e) {
+        	  System.out.println("Bug: " + e.getMessage());
+  			  return null;
+          }
 	}
 
 }

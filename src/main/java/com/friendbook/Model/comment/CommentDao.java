@@ -29,7 +29,6 @@ public class CommentDao implements ICommentDao {
 
 	@Override
 	public void likeComment(long userId, long commentId) throws SQLException {
-		// TODO check if working
 		try (PreparedStatement ps = connection
 				.prepareStatement("INSERT INTO users_likes_comments (user_id, comment_id) VALUES (?,?)")) {
 			ps.setLong(1, userId);
@@ -103,7 +102,6 @@ public class CommentDao implements ICommentDao {
 
 	@Override
 	public boolean checkIfAlreadyLiked(long userId, long commentId) throws SQLException {
-		// TODO check if working
 		try (PreparedStatement ps = connection.prepareStatement(
 				"SELECT user_id, comment_id FROM users_likes_comments WHERE user_id = ? AND comment_id = ?")) {
 			ps.setLong(1, userId);

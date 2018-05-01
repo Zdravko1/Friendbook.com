@@ -18,38 +18,11 @@ public class Post implements Serializable{
 	private int likes;
 	private List<Comment> comments = new ArrayList<>();
 	private LocalDateTime date;
-	
-	//for testing purposes
-	public Post(User user, String text) {
-		this.user = user;
-		setText(text);
-	}
-	
-	public Post(long id, User user, String text, LocalDateTime date) {
-		this(user, text);
-		this.id = id;
-		this.date = date;
-	}
-	//
-	
+		
 	public Post(User user, String text, String imagePath) {
 		this.user = user;
 		setText(text);
 		this.imagePath = imagePath;
-	}
-
-	public Post(long id, String imagePath, String text, LocalDateTime date, User user) {
-		this.id = id;
-		this.imagePath = imagePath;
-		this.text = text;
-		this.user = user;
-		this.date = date;
-	}
-	
-	public Post(int id, User u, String text) {
-		this.id = id;
-		this.user = u;
-		this.text = text;
 	}
 
 	public Post(long id, String imagePath, String text, User user) {
@@ -57,6 +30,11 @@ public class Post implements Serializable{
 		this.imagePath = imagePath;
 		this.text = text;
 		this.user = user;
+	}
+
+	public Post(int id, String imagePath, String desctription, User u, LocalDateTime localDateTime) {
+		this(id, imagePath, desctription, u);
+		setDate(localDateTime);
 	}
 
 	public LocalDateTime getDate() {
