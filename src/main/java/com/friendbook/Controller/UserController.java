@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.post.Post;
@@ -40,14 +42,11 @@ public class UserController {
 	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String getLoginPage(HttpSession session, Model model) {
-		if(session.isNew()) {
+		User user = (User) session.getAttribute("user");
+		if(session.isNew() || user == null) {
 			return "login";
 		}
 		try {	
-			User user = (User) session.getAttribute("user");
-			if(user == null) {
-				return "login";
-			}
 			List<Post> posts = userDao.getPostsByUserID(user.getId());
 			model.addAttribute("posts", posts);
 			return "index";
@@ -58,11 +57,11 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
-	public String login(HttpServletRequest req, HttpSession session, Model model) {
+	public String login(@RequestParam String username,
+			 			@RequestParam String password,
+			 			HttpSession session, Model model) {
 		try {
 			//get username and password from jsp
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
 			//try to login if not exception will fire
 			userDao.loginCheck(username, password);
 			//if successfull, get user
@@ -70,7 +69,7 @@ public class UserController {
 			//get user's posts and put them in request
 			List<Post> posts = userDao.getPostsByUserID(user.getId());
 			session.setAttribute("user", user);
-			req.setAttribute("posts", posts);
+			model.addAttribute("posts", posts);
 			
 			return "index";
 		} catch (WrongCredentialsException e) {
@@ -118,9 +117,10 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
+	@ResponseBody
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "login";
+		return "logout";
 	}
 	
 	@RequestMapping(value="/getPic", method = RequestMethod.GET)
@@ -151,7 +151,7 @@ public class UserController {
 			User visitedUser = userDao.getUserByNames(searchUser);
 			//if the searched user is followed already put a flag and change the follow button to followed in jsp
 			//or if this is the same user
-			if(userDao.isFollower(user, visitedUser.getId()) || user.getId() == visitedUser.getId()) {
+			if(userDao.isFollower(user.getId(), visitedUser.getId()) || user.getId() == visitedUser.getId()) {
 				visitedUser.setFollowed(true);
 			}
 			model.addAttribute("visit", true);
@@ -163,7 +163,7 @@ public class UserController {
 			return "error";
 		}
 	}
-	
+
 	@RequestMapping(method = RequestMethod.GET)
 	public String index() {
 		return "login";

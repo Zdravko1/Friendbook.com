@@ -54,13 +54,13 @@ public class RestController {
 		long followedId = Long.parseLong(request.getParameter("followedId"));
 		try {
 			//check if the current user is following the one who is visited by him
-			if(!userDao.isFollower(user, followedId)) {
+			if(!userDao.isFollower(user.getId(), followedId)) {
 				//if not then follow him and switch the button to "Followed"
-				userDao.followUser(user, followedId);
+				userDao.followUser(user.getId(), followedId);
 				return new Gson().toJson("Followed");
 			}
 			//else unfollow him and switch the button name
-			userDao.unfollowUser(user, followedId);
+			userDao.unfollowUser(user.getId(), followedId);
 			return new Gson().toJson("Follow");
 		} catch (Exception e) {
 			System.out.println("Bug: " + e.getMessage());
@@ -70,19 +70,18 @@ public class RestController {
 	
 	@RequestMapping(value="/likePost", method = RequestMethod.POST)
 	public Integer likePost(HttpSession session, HttpServletRequest request) {
-		int id = Integer.parseInt(request.getParameter("like"));
-		System.out.println(id);
-		User u = (User) session.getAttribute("user");
+		int likeId = Integer.parseInt(request.getParameter("like"));
+		long userId = ((User) session.getAttribute("user")).getId();
 		//check if this post was liked by the user before
 		//remove like if so or add a like
 		try {
-			if(userDao.isPostLiked(u, id)) {
-				postDao.decreasePostLikes(u, id);
+			if(userDao.isPostLiked(userId, likeId)) {
+				postDao.decreasePostLikes(userId, likeId);
 			} else {
-				postDao.increasePostLikes(u, id);
+				postDao.increasePostLikes(userId, likeId);
 			}
-			request.setAttribute("posts", userDao.getPostsByUserID(u.getId()));
-			return postDao.getLikesByID(id);
+			request.setAttribute("posts", userDao.getPostsByUserID(userId));
+			return postDao.getLikesByID(likeId);
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());
 			return null;

@@ -11,9 +11,9 @@ public interface IPostDao {
 	
 	int getLikesByID(long id) throws SQLException;
 	
-	void increasePostLikes(User u, long id) throws SQLException;
+	void increasePostLikes(long userId, long postId) throws SQLException;
 	
-	void decreasePostLikes(User u, long id) throws SQLException;
+	void decreasePostLikes(long userId, long postId) throws SQLException;
 	
 	void getAllPostsOfGivenUser(User user) throws SQLException;
 

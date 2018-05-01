@@ -35,7 +35,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
   <a  href="reloadPosts" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right" title="Home"></i>Home</a>
   <a href="reloadFeed" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Feed"><i class="fa fa-globe"></i></a>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="My Account"><i class="fa fa-user"></i></a>
-  <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
+  <a onclick="logout()" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
   
   <form action="search" method="post">
   	<button type="submit" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Search</button>
@@ -96,11 +96,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 	          </div>
           </c:if>
           <form method="post" action="order">
-          <select name="order">
-          	<option value="likes">Likes</option>
-          	<option value="date">Date</option>
-          </select>
-          <button type="submit">Order</button>
+	          <select name="order">
+	          	<option value="likes">Likes</option>
+	          	<option value="date">Date</option>
+	          </select>
+	          <input type="hidden" name="feed" value="${ feed }">
+	          <input type="hidden" name="visit" value="${ visit }">
+	          <input type="hidden" name="visitedUserId" value="${ visitedUser.getId() }">
+	          <button type="submit">Order</button>
           </form>
         </div>
       </div>
@@ -193,12 +196,7 @@ function addComment(nameId, postId, id, currentCommentId){
 	var request = new XMLHttpRequest();
 	request.open('POST', 'comment', true);
 	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	//if(currentComment == null){
-		request.send("text=" + document.getElementById(nameId+id).value + "&currentPost=" + postId + "&currentComment=" + currentComment);
-	//} else {
-	//	request.send("text=" + document.getElementById(nameId+id).value + "&currentPost=" + postId + "&currentComment=" + currentComment);
-	//}
-		
+	request.send("text=" + document.getElementById(nameId+id).value + "&currentPost=" + postId + "&currentComment=" + currentComment);
 	request.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
 			var result = this.responseText;
@@ -341,6 +339,19 @@ $(document).ready(function() {
      });
   });
 })
+
+//logout
+function logout(){
+    $.ajax({
+        url: "logout",
+        type: "GET",
+    }).then(function (data) {
+        if(data==="logout"){
+            window.location.replace("login");
+        }
+    });
+}
+
 </script>
 
 </body>

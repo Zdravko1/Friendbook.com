@@ -17,12 +17,12 @@ public interface IUserDao {
 	void loginCheck(String username, String password) throws WrongCredentialsException, SQLException;
 	//TODO Delete, ima go i v postdao, i mai tam e po dobre
 	List<Post> getPostsByUserID(long id) throws SQLException;
-	void followUser(User user, long followedId) throws SQLException;
+	void followUser(long followerId, long followedId) throws SQLException;
 	ArrayList<Post> getUserFeedById(long id) throws SQLException;
 	User getUserByUsername(String username) throws SQLException;
 	List<String> getUsersNamesStartingWith(String term) throws SQLException;
-	boolean isPostLiked(User u, int id) throws SQLException;
-	boolean isFollower(User follower, long userId) throws SQLException;
+	boolean isPostLiked(long userId, long postId) throws SQLException;
+	boolean isFollower(long followerId, long userId) throws SQLException;
 	
-	void unfollowUser(User user, long followedId) throws SQLException;
+	void unfollowUser(long followerId, long followedId) throws SQLException;
 }

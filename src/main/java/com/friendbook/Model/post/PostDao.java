@@ -85,21 +85,21 @@ public class PostDao implements IPostDao {
 	}
 
 	@Override
-	public void increasePostLikes(User u, long id) throws SQLException {
-		String query = "INSERT INTO users_likes_posts VALUES(?,?)";
+	public void increasePostLikes(long userId, long postId) throws SQLException {
+		String query = "INSERT INTO users_likes_posts() VALUES(?,?)";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
-			ps.setLong(1, id);
-			ps.setLong(2, u.getId());
+			ps.setLong(1, postId);
+			ps.setLong(2, userId);
 			ps.executeUpdate();
 		}
 	}
 
 	@Override
-	public void decreasePostLikes(User u, long id) throws SQLException {
+	public void decreasePostLikes(long userId, long postId) throws SQLException {
 		String query = "DELETE FROM users_likes_posts WHERE user_id = ? AND post_id = ?";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
-			ps.setLong(1, u.getId());
-			ps.setLong(2, id);
+			ps.setLong(1, userId);
+			ps.setLong(2, postId);
 			ps.executeUpdate();
 		}
 	}

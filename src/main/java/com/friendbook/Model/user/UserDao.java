@@ -47,7 +47,7 @@ public class UserDao implements IUserDao {
 	@Override
 	public User getByID(long id) throws SQLException {
 		User u = null;
-		String query = "SELECT * FROM users WHERE id = ?";
+		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE id = ?";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -78,21 +78,21 @@ public class UserDao implements IUserDao {
 	}
 		
 	@Override
-	public void followUser(User user, long followedId) throws SQLException {
+	public void followUser(long followerId, long followedId) throws SQLException {
 		try (PreparedStatement ps = connection.prepareStatement(
 				"INSERT INTO users_has_users (user_id_followed, user_id_follower) VALUES (?,?)")) {	
 			ps.setLong(1, followedId);
-			ps.setLong(2, user.getId());
+			ps.setLong(2, followerId);
 			ps.executeUpdate();
 		}
 	}
 	
 	@Override
-	public void unfollowUser(User user, long followedId) throws SQLException {
+	public void unfollowUser(long followerId, long followedId) throws SQLException {
 		try (PreparedStatement ps = connection.prepareStatement(
 				"DELETE FROM users_has_users WHERE user_id_followed = ? AND user_id_follower = ?")) {	
 			ps.setLong(1, followedId);
-			ps.setLong(2, user.getId());
+			ps.setLong(2, followerId);
 			ps.executeUpdate();
 		}
 	}
@@ -115,7 +115,6 @@ public class UserDao implements IUserDao {
 			ps.setString(1, username);
 			ps.setString(2, email);
 			ResultSet rs = ps.executeQuery();
-			// TODO check if this works
 			if (rs.next()) {
 				throw new WrongCredentialsException("Existing user");
 			}
@@ -127,7 +126,6 @@ public class UserDao implements IUserDao {
 		try (PreparedStatement ps = connection.prepareStatement("SELECT username FROM users WHERE username = ?")) {
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
-			// TODO check if this works
 			if (rs.next()) {
 				throw new WrongCredentialsException("Existing username");
 			}
@@ -156,11 +154,11 @@ public class UserDao implements IUserDao {
 	
 	
 	@Override
-	public boolean isPostLiked(User u, int id) throws SQLException {
+	public boolean isPostLiked(long userId, long postId) throws SQLException {
 		String query = "SELECT * FROM users_likes_posts WHERE user_id = ? AND post_id = ?";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
-			ps.setLong(1, u.getId());
-			ps.setInt(2, id);
+			ps.setLong(1, userId);
+			ps.setLong(2, postId);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				ps.close();
@@ -216,10 +214,10 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public boolean isFollower(User follower, long userId) throws SQLException {
+	public boolean isFollower(long followerId, long userId) throws SQLException {
 		String query = "SELECT * FROM users_has_users WHERE user_id_follower = ? AND user_id_followed = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
-			ps.setLong(1, follower.getId());
+			ps.setLong(1, followerId);
 			ps.setLong(2, userId);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) {
