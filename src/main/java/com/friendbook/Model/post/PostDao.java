@@ -104,9 +104,9 @@ public class PostDao implements IPostDao {
 			ResultSet rs = ps.executeQuery();
 			User u = userDao.getByID(id);
 			while (rs.next()) {
-				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
+				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"),
+						u, rs.getTimestamp("date").toLocalDateTime());
 				p.setLikes(getLikesByID(p.getId()));
-				p.setDate(rs.getTimestamp("date").toLocalDateTime());
 				commentDao.getAndSetAllCommentsOfGivenPost(p);
 				posts.add(p);
 			}

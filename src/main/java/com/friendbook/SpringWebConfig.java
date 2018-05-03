@@ -11,6 +11,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
@@ -38,6 +39,11 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		resolver.setSuffix(".jsp");
 		
 		return resolver;
+	}
+	
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+	    registry.addViewController("/").setViewName("forward:/jsp/login.jsp");
 	}
 	
 	// localization configuration

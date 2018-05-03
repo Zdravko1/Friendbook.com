@@ -24,7 +24,7 @@ public class CommentController {
 
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
 	@ResponseBody
-	public String comment(HttpServletRequest request, HttpServletResponse response) {
+	public String comment(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		User user = (User) request.getSession().getAttribute("user");
 		long postId = Long.parseLong(request.getParameter("currentPost"));
 		Long commentId = null;
@@ -34,34 +34,31 @@ public class CommentController {
 		Comment comment = new Comment(user.getId(), postId, commentId, request.getParameter("text"));
 		try {
 			commentDao.addComment(comment);
-			
+
 			return new Gson().toJson(commentDao.getLastCommentByUserId(user.getId()));
-		} catch (SQLException e) {
-			System.out.println("SQLBug: " + e.getMessage());
-			return null;
 		} catch (Exception e) {
-			System.out.println("Bug: " + e.getMessage());
-			return null;
+			e.printStackTrace();
+			throw e;
 		}
 	}
 
 	@RequestMapping(value = "/likeComment", method = RequestMethod.POST)
 	@ResponseBody
-	public String likeComment(HttpServletRequest req, HttpServletResponse resp) {
+	public String likeComment(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
 		long commentId = Long.parseLong(req.getParameter("like"));
 		User u = (User) req.getSession().getAttribute("user");
 		// check if this post was liked by the user before
 		// remove like if so or add a like
 		try {
-			if(commentDao.checkIfAlreadyLiked(u.getId(), commentId)) {
+			if (commentDao.checkIfAlreadyLiked(u.getId(), commentId)) {
 				commentDao.removeLike(u.getId(), commentId);
 				return new Gson().toJson(commentDao.getLikesByID(commentId));
 			}
 			commentDao.likeComment(u.getId(), commentId);
 			return new Gson().toJson(commentDao.getLikesByID(commentId));
 		} catch (SQLException e) {
-			System.out.println("SQL Bug: " + e.getMessage());
-			return null;
+			e.printStackTrace();
+			throw e;
 		}
 	}
 }

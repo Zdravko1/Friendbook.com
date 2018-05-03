@@ -15,7 +15,6 @@ public interface IUserDao {
 	void existingUserNameCheck(String username) throws WrongCredentialsException, SQLException;
 	void existingUserCheck(String username, String email) throws WrongCredentialsException, SQLException;
 	void loginCheck(String username, String password) throws WrongCredentialsException, SQLException;
-	//TODO Delete, ima go i v postdao, i mai tam e po dobre
 	void followUser(long followerId, long followedId) throws SQLException;
 	ArrayList<Post> getUserFeedById(long id) throws SQLException, WrongCredentialsException;
 	User getUserByUsername(String username) throws SQLException, WrongCredentialsException;

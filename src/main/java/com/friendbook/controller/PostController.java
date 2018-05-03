@@ -46,7 +46,7 @@ public class PostController {
 	
 	@RequestMapping(value="/post", method = RequestMethod.POST)
 	@ResponseBody
-	public String post(HttpServletRequest request) {
+	public String post(HttpServletRequest request) throws Exception {
 		User user = (User)request.getSession().getAttribute("user");
 		Post post = null;
 		String path = null;
@@ -72,34 +72,28 @@ public class PostController {
 			postDao.addPost(post);
 			System.out.println("Added post to database.");
 			return new Gson().toJson(userDao.getLastPostByUserId(user.getId()));
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
 		} catch(Exception e) {
-			System.out.println("Bug2: " );
 			e.printStackTrace();
-			return null;
+			throw e;
 		}
 	}
 
 	@RequestMapping(value="/reloadPosts", method = RequestMethod.GET)
-	public String reloadPosts(HttpSession session, Model model) {
+	public String reloadPosts(HttpSession session, Model model) throws SQLException, WrongCredentialsException {
 		try {
 			User user = (User) session.getAttribute("user");
 			List<Post> posts = postDao.getPostsByUserID(user.getId());
 			model.addAttribute("posts", posts);
 			return "index";
-		} catch (SQLException e) {
-			System.out.println("SQL bug: " + e.getMessage());
-			return "error";
-		} catch (WrongCredentialsException e) {
-			return "error";
+		} catch (SQLException | WrongCredentialsException e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
 	
 	@RequestMapping(value="/likePost", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer likePost(HttpSession session, HttpServletRequest request) {
+	public Integer likePost(HttpSession session, HttpServletRequest request) throws Exception {
 		int likeId = Integer.parseInt(request.getParameter("like"));
 		long userId = ((User) session.getAttribute("user")).getId();
 		//check if this post was liked by the user before
@@ -113,41 +107,38 @@ public class PostController {
 			request.setAttribute("posts", postDao.getPostsByUserID(userId));
 			return postDao.getLikesByID(likeId);
 		} catch (Exception e) {
-			System.out.println("SQL Bug: " + e.getMessage());
-			return null;
+			e.printStackTrace();
+			throw e;
 		} 
 	}
 
 	@RequestMapping(value="/reloadFeed", method = RequestMethod.GET)
-	public String reloadFeed(HttpSession session, Model model) {
+	public String reloadFeed(HttpSession session, Model model) throws Exception {
 		try {
 			User u = (User) session.getAttribute("user");
 			ArrayList<Post> feed = userDao.getUserFeedById(u.getId());
 			model.addAttribute("posts", feed);
 			model.addAttribute("feed", true);
 			return "index";
-		} catch (SQLException e) {
-			System.out.println("SQL Bug: " + e.getMessage());
-			return "error";
-		} catch (WrongCredentialsException e) {
-			return "error";
-		}
+		} catch (SQLException | WrongCredentialsException e ) {
+			e.printStackTrace();
+			throw e;
+		} 
 	}
 	
 	@RequestMapping(value="/order", method = RequestMethod.POST)
-	public String order(HttpSession session, Model model, HttpServletRequest request) {
+	public String order(HttpSession session, Model model, HttpServletRequest request) throws Exception {
 		String order = request.getParameter("order");
 		try {
-//			List<Post> posts = userDao.getPostsByUserID(user.getId());
 			model.addAttribute("posts", orderBy(order, request, session, model));
 			return "index";
 		} catch (Exception e) {
-			System.out.println("SQL Bug: " + e.getMessage());
-			return "error";
+			e.printStackTrace();
+			throw e;
 		}
 	}
 	
-	private List<Post> orderBy(String order, HttpServletRequest request, HttpSession session, Model model) throws SQLException, NumberFormatException, WrongCredentialsException{
+	private List<Post> orderBy(String order, HttpServletRequest request, HttpSession session, Model model) throws Exception {
 		List<Post> posts = null;
 		if(!request.getParameter("visit").isEmpty()) {
 			//if visiting user's profile get his posts and order and return
@@ -169,15 +160,14 @@ public class PostController {
 		return posts;
 	}
 	
-	private static void decoder(String base64Image, File f) {
+	private static void decoder(String base64Image, File f) throws IOException {
 		try (FileOutputStream imageOutFile = new FileOutputStream(f)) {
 			byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(base64Image);
 			imageOutFile.write(btDataFile);
 			imageOutFile.flush();
-		} catch (FileNotFoundException e) {
-			System.out.println("Image not found" + e);
-		} catch (IOException ioe) {
-			System.out.println("Exception while reading the Image " + ioe);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
 }
