@@ -1,28 +1,32 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<title>Friendbook</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="/Friendbook.com/css/style.css">
-<!-- for search function -->
+<html lang="en">
 <head>
-	<meta charset="ISO-8859-1">
-	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-	<link rel="stylesheet" 
-	  href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-	<!-- ================ -->
+	<title>Friendbook</title>
+	<link href="css/errorStyle.css" rel='stylesheet'/>
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+	<link href="//fonts.googleapis.com/css?family=Ravi+Prakash" rel="stylesheet">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="keywords" content="Custom Error Page Widget Responsive, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design" />
+		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 </head>
-<style>
-html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
-</style>
-<body class="w3-theme-l5">
-<img src="/Friendbook.com/img/images.jpg"/>
+<body>
+	<div class="top-bar-agile">
+		<div class="nav-agileinfo">
+			<ul>
+				<li><a href="login">Login</a></li>
+				<li><a href="register">Register</a></li>
+			</ul>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="content-w3">
+		<h1>404</h1>
+		<h2>Something went wrong</h2>
+		<p>The page you are looking for has been removed,had its name changed or temporarily unavailable</p>
+	</div>
 </body>
 </html>

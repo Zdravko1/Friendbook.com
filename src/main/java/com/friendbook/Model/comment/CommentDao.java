@@ -77,7 +77,6 @@ public class CommentDao implements ICommentDao {
 			rs.next();
 			comment.setId(rs.getLong(1));
 		}
-		System.out.println("Added comment");
 	}
 
 	@Override

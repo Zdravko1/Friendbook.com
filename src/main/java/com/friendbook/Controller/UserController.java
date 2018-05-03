@@ -156,10 +156,26 @@ public class UserController {
 			throw e;
 		}
 	}
-
+	
+	@RequestMapping("*")
+	public String index(HttpSession session, Model model) {
+		User user = (User) session.getAttribute("user");
+		if (session.isNew() || user == null) {
+			return "login";
+		}
+		try {
+			List<Post> posts = postDao.getPostsByUserID(user.getId());
+			model.addAttribute("posts", posts);
+			return "index";
+		} catch (SQLException | WrongCredentialsException e) {
+			System.out.println("Exception: " + e.getMessage());
+			return "error";
+		}
+	}
+	
 	@RequestMapping(value = "/searchAutoComplete", method = RequestMethod.GET)
 	@ResponseBody
-	public String searchAutoComplete(HttpServletResponse response, HttpServletRequest request) throws Exception {
+	public String searchAutoComplete(HttpServletResponse response, HttpServletRequest request) {
 		response.setContentType("application/json");
 		try {
 			String term = request.getParameter("term");

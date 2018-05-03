@@ -82,18 +82,6 @@ public class PostDao implements IPostDao {
 		}
 	}
 
-	@Override
-	public void getAllPostsOfGivenUser(User user) throws SQLException {
-		try (PreparedStatement ps = connection
-				.prepareStatement("SELECT id, image_video_path, description, date FROM posts WHERE user_id = ?")) {
-			ps.setLong(1, user.getId());
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				Post p = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription"),
-						user);
-			}
-		}
-	}
 	
 	@Override
 	public List<Post> getPostsByUserID(long id) throws SQLException, WrongCredentialsException {
@@ -111,7 +99,6 @@ public class PostDao implements IPostDao {
 				posts.add(p);
 			}
 		}
-		System.out.println(posts);
 		return posts;
 	}
 
