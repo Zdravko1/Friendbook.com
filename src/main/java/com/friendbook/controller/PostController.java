@@ -49,18 +49,17 @@ public class PostController {
 	public String post(HttpServletRequest request) {
 		User user = (User)request.getSession().getAttribute("user");
 		Post post = null;
-		String path = null;
+		String path = "D:\\photos\\";
 		try {
 			String image = request.getParameter("file");
 			if(image != null) {
 				image = image.split(",")[1].replaceAll(" ", "+");
-				System.out.println(image);
 				String imageName = "image"+image.substring(0, 10)+".jpg";
-				File file = new File("D:\\photos\\" + user.getUsername());
+				File file = new File( path + user.getUsername());
 				if(!file.exists()) {
 					file.mkdirs();
 				}
-				file = new File("D:\\photos\\"+user.getUsername()+"\\"+imageName);
+				file = new File(path + user.getUsername() + File.pathSeparator + imageName);
 				file.createNewFile();
 				
 				decoder(image, file);
