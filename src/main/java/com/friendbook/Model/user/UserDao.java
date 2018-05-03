@@ -187,13 +187,11 @@ public class UserDao implements IUserDao {
 			ps.setLong(1, userId);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				User u = getByID(rs.getInt("user_id"));
-				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
-				p.setDate(rs.getTimestamp("date").toLocalDateTime());
-				// TODO get below code in constructor
-				p.setLikes(postDao.getLikesByID(p.getId()));
-				commentDao.getAndSetAllCommentsOfGivenPost(p);
-				feed.add(p);
+				User user = getByID(rs.getInt("user_id"));
+				Post post = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), user, rs.getTimestamp("date").toLocalDateTime());
+				postDao.getLikesByID(post.getId());
+				commentDao.getAndSetAllCommentsOfGivenPost(post);
+				feed.add(post);
 			}
 		}
 		return feed;
