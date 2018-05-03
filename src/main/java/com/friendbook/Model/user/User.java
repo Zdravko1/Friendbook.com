@@ -1,24 +1,9 @@
 package com.friendbook.model.user;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import com.friendbook.exceptions.WrongCredentialsException;
-import com.friendbook.model.post.Post;
 
 public class User {
-
-	@Autowired
-	private UserDao userDao;
 	
 	private static final String PASS_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
 	private static final String EMAIL_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";

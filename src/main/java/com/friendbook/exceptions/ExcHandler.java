@@ -12,9 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 	public class ExcHandler extends ResponseEntityExceptionHandler {
 	 
 	    @ExceptionHandler(value = { Exception.class})
-	    protected String handleConflict(Exception ex, Model model) {
-	        String error = ex.getMessage();
-	        model.addAttribute("error", error);
+	    protected String errorHandler(Exception ex) {
 	        return "error";
 	    }
 	}

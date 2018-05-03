@@ -48,15 +48,14 @@ public class CommentDao implements ICommentDao {
 	}
 
 	@Override
-	public void getCommentsOfParentComment(Comment comment) throws SQLException {
+	public void getCommentsOfParentComment(Comment comment) throws SQLException, WrongCredentialsException {
 		try (PreparedStatement ps = connection
 				.prepareStatement("SELECT id, text, user_id, date FROM comments WHERE parent_id = ?")) {
 			ps.setLong(1, comment.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				Comment com = new Comment(rs.getLong("id"), rs.getLong("user_id"), comment.getPost(), comment.getId(),
-						rs.getString("text"));
-				com.setDate(rs.getTimestamp("date").toLocalDateTime());
+						rs.getString("text"), userDao.getByID(rs.getLong("user_id")) , rs.getTimestamp("date").toLocalDateTime());
 				getCommentsOfParentComment(com);
 				comment.addComment(com);
 			}
@@ -81,7 +80,7 @@ public class CommentDao implements ICommentDao {
 	}
 
 	@Override
-	public void getAndSetAllCommentsOfGivenPost(Post post) throws SQLException {
+	public void getAndSetAllCommentsOfGivenPost(Post post) throws SQLException, WrongCredentialsException {
 		try (PreparedStatement ps = connection
 				.prepareStatement("SELECT id, text, date, parent_id, user_id FROM comments WHERE post_id = ?")) {
 			ps.setLong(1, post.getId());
@@ -89,9 +88,8 @@ public class CommentDao implements ICommentDao {
 			while (rs.next()) {
 				if (rs.getLong("parent_id") == 0) {
 					Comment comment = new Comment(rs.getLong("id"), rs.getLong("user_id"), post.getId(),
-							rs.getLong("parent_id"), rs.getString("text"));
+							rs.getLong("parent_id"), rs.getString("text"), userDao.getByID(rs.getLong("user_id")), rs.getTimestamp("date").toLocalDateTime());
 					comment.setLikes(getLikesByID(comment.getId()));
-					comment.setDate(rs.getTimestamp("date").toLocalDateTime());
 					getCommentsOfParentComment(comment);
 					post.addComment(comment);
 				}
@@ -135,8 +133,7 @@ public class CommentDao implements ICommentDao {
 			rs.next();
 			User u = userDao.getByID(rs.getLong("user_id"));
 			Comment c = new Comment(rs.getLong("id"), rs.getLong("user_id"), rs.getInt("post_id"), null,
-					rs.getString("text"), u);
-			c.setDate(rs.getTimestamp("date").toLocalDateTime());
+					rs.getString("text"), u, rs.getTimestamp("date").toLocalDateTime());
 			return c;
 		}
 	}

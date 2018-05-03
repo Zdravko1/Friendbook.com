@@ -219,8 +219,8 @@ public class UserDao implements IUserDao {
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			User u = getByID(rs.getInt("user_id"));
-			Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
-			p.setDate(rs.getTimestamp("date").toLocalDateTime());
+			Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"),
+					u, rs.getTimestamp("date").toLocalDateTime());
 			p.setLikes(postDao.getLikesByID(p.getId()));
 			commentDao.getAndSetAllCommentsOfGivenPost(p);
 			return p;

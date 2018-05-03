@@ -42,8 +42,8 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(@RequestParam String username, @RequestParam String password, HttpSession session,
-			Model model) {
+	public String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model)
+			throws Exception {
 		try {
 			// get username and password from jsp
 			// try to login if not exception will fire
@@ -56,20 +56,15 @@ public class UserController {
 			model.addAttribute("posts", posts);
 
 			return "index";
-		} catch (WrongCredentialsException e) {
-			System.out.println("Exception: " + e.getMessage());
-			return "error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Some error occured: " + e.getMessage());
-			return "error";
+			throw e;
 		}
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String register(HttpServletRequest request) throws WrongCredentialsException {
+	public String register(HttpServletRequest request) throws Exception {
 		String username = request.getParameter("username");
-		System.out.println(username);
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		String password2 = request.getParameter("confirm password");
@@ -86,12 +81,9 @@ public class UserController {
 			userDao.saveUser(u);
 
 			return "login";
-		} catch (WrongCredentialsException e) {
-			request.setAttribute("error", e.getMessage());
-			return "error";
-		} catch (SQLException e) {
-			System.out.println("Bug: " + e.getMessage());
-			return "error";
+		} catch (WrongCredentialsException | SQLException e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
 
@@ -102,7 +94,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/getPic", method = RequestMethod.GET)
-	public void getPic(HttpServletRequest request, HttpServletResponse response) {
+	public void getPic(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		long postId = Long.parseLong(request.getParameter("postId"));
 		try {
 			String imagePath = postDao.getPostImageById(postId);
@@ -117,13 +109,14 @@ public class UserController {
 				}
 			}
 		} catch (SQLException | IOException e) {
-			System.out.println("BUG: " + e.getMessage());
+			e.printStackTrace();
+			throw e;
 		}
 	}
 
 	@RequestMapping(value = "/follow", method = RequestMethod.POST)
 	@ResponseBody
-	public String followUser(HttpSession session, HttpServletRequest request) {
+	public String followUser(HttpSession session, HttpServletRequest request) throws Exception {
 		User user = (User) session.getAttribute("user");
 		long followedId = Long.parseLong(request.getParameter("followedId"));
 		try {
@@ -137,13 +130,13 @@ public class UserController {
 			userDao.unfollowUser(user.getId(), followedId);
 			return new Gson().toJson("Follow");
 		} catch (Exception e) {
-			System.out.println("Bug: " + e.getMessage());
-			return "error";
+			e.printStackTrace();
+			throw e;
 		}
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
-	public String search(HttpSession session, HttpServletRequest request, Model model) {
+	public String search(HttpSession session, HttpServletRequest request, Model model) throws Exception {
 		User user = (User) session.getAttribute("user");
 		String searchUser = request.getParameter("user");
 		try {
@@ -158,14 +151,12 @@ public class UserController {
 			model.addAttribute("visitedUser", visitedUser);
 			model.addAttribute("posts", postDao.getPostsByUserID(visitedUser.getId()));
 			return "index";
-		} catch (SQLException e) {
-			System.out.println("SQL Bug: " + e.getMessage());
-			return "error";
-		} catch (WrongCredentialsException e) {
-			return "error";
+		} catch (SQLException | WrongCredentialsException e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
-
+	
 	@RequestMapping("*")
 	public String index(HttpSession session, Model model) {
 		User user = (User) session.getAttribute("user");
@@ -181,7 +172,7 @@ public class UserController {
 			return "error";
 		}
 	}
-
+	
 	@RequestMapping(value = "/searchAutoComplete", method = RequestMethod.GET)
 	@ResponseBody
 	public String searchAutoComplete(HttpServletResponse response, HttpServletRequest request) {
@@ -194,9 +185,8 @@ public class UserController {
 
 			return new Gson().toJson(list);
 		} catch (Exception e) {
-			System.out.println("Bug: " + e.getMessage());
-			return null;
+			e.printStackTrace();
+			throw e;
 		}
 	}
-
 }
