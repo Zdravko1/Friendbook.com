@@ -41,24 +41,6 @@ public class UserController {
 		return "register";
 	}
 	
-	@RequestMapping(value="/login", method = RequestMethod.GET)
-	public String getLoginPage(HttpSession session, Model model) {
-		User user = (User) session.getAttribute("user");
-		if(session.isNew() || user == null) {
-			return "login";
-		}
-		try {	
-			List<Post> posts = postDao.getPostsByUserID(user.getId());
-			model.addAttribute("posts", posts);
-			return "index";
-		} catch (SQLException e) {
-			System.out.println("SQL bug: " + e.getMessage());
-			return "error";
-		} catch (WrongCredentialsException e) {
-			return "error";
-		}
-	}
-	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public String login(@RequestParam String username,
 			 			@RequestParam String password,
@@ -182,6 +164,22 @@ public class UserController {
 			System.out.println("SQL Bug: " + e.getMessage());
 			return "error";
 		} catch (WrongCredentialsException e) {
+			return "error";
+		}
+	}
+	
+	@RequestMapping("*")
+	public String index(HttpSession session, Model model) {
+		User user = (User) session.getAttribute("user");
+		if(session.isNew() || user == null) {
+			return "login";
+		}
+		try {	
+			List<Post> posts = postDao.getPostsByUserID(user.getId());
+			model.addAttribute("posts", posts);
+			return "index";
+		} catch (SQLException | WrongCredentialsException e) {
+			System.out.println("Exception: " + e.getMessage());
 			return "error";
 		}
 	}

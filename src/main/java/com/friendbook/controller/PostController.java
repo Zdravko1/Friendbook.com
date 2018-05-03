@@ -71,26 +71,8 @@ public class PostController {
 			return null;
 		}
 	}
-	
-	@Autowired
-	private PostDao postDao;
-	
-	@RequestMapping(value="/reloadPosts", method = RequestMethod.GET)
-	public String reloadPosts(HttpSession session, Model model) {
-		try {
-			User user = (User) session.getAttribute("user");
-			List<Post> posts = postDao.getPostsByUserID(user.getId());
-			model.addAttribute("posts", posts);
-			return "index";
-		} catch (SQLException e) {
-			System.out.println("SQL bug: " + e.getMessage());
-			return "error";
-		} catch (WrongCredentialsException e) {
-			return "error";
-		}
-	}
 
-	@RequestMapping(value="/reloadFeed", method = RequestMethod.GET)
+	@RequestMapping(value="/feed", method = RequestMethod.GET)
 	public String reloadFeed(HttpSession session, Model model) {
 		try {
 			User u = (User) session.getAttribute("user");
@@ -121,9 +103,15 @@ public class PostController {
 	
 	private List<Post> orderBy(String order, HttpServletRequest request, HttpSession session, Model model) throws SQLException, NumberFormatException, WrongCredentialsException{
 		List<Post> posts = null;
+		User user = (User) session.getAttribute("user");
 		if(!request.getParameter("visit").isEmpty()) {
 			//if visiting user's profile get his posts and order and return
 			User visited = userDao.getByID(Long.parseLong(request.getParameter("visitedUserId")));
+			//if the searched user is followed already put a flag and change the follow button to followed in jsp
+			//or if this is the same user
+			if(userDao.isFollower(user.getId(), visited.getId()) || user.getId() == visited.getId()) {
+				visited.setFollowed(true);
+			}
 			posts = postDao.getPostsByUserID(visited.getId());
 			model.addAttribute("visit", true);
 			model.addAttribute("visitedUser", visited);

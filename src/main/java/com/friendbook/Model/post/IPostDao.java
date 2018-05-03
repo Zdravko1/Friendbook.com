@@ -17,8 +17,6 @@ public interface IPostDao {
 	
 	void decreasePostLikes(long userId, long postId) throws SQLException;
 	
-	void getAllPostsOfGivenUser(User user) throws SQLException;
-
 	void addPost(Post post) throws SQLException;
 	
 	String getPostImageById(long postId) throws SQLException;

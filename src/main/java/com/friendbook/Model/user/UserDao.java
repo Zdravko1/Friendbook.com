@@ -159,7 +159,7 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public User getUserByUsername(String username) throws SQLException {
+	public User getUserByUsername(String username) throws SQLException, WrongCredentialsException {
 		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE username = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setString(1, username);
@@ -180,11 +180,11 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public ArrayList<Post> getUserFeedById(long id) throws SQLException, WrongCredentialsException {
+	public ArrayList<Post> getUserFeedById(long userId) throws SQLException, WrongCredentialsException {
 		ArrayList<Post> feed = new ArrayList<>();
 		String query = "SELECT id, image_video_path, description, date, user_id FROM posts WHERE user_id IN (SELECT user_id_followed FROM users_has_users WHERE user_id_follower = ?) ORDER BY date DESC";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
-			ps.setLong(1, id);
+			ps.setLong(1, userId);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				User u = getByID(rs.getInt("user_id"));
