@@ -12,12 +12,12 @@ public class User {
 	
 	private long id;
 	private String username;
-	private String password; //bcrypt
+	private String password;
 	private String email;
 	private String firstName;
 	private String lastName;
 	private int followers;
-	private boolean isFollowed; //using it to show/hide follow button, will remove later if i find better way to do it.
+	private boolean isFollowed;
 
 	public User(String username, String password, String email, String firstName, String lastName) throws SQLException, WrongCredentialsException {
 		this.setUsername(username);

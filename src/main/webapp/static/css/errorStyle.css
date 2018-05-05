@@ -28,7 +28,7 @@ nav.horizontal ul li{	display: inline-block;}/* horizontal menu */
 img{max-width:100%;}
 /*end reset*/
 body{
-	background: url(/friendbook.com/img/contentbg.jpg) no-repeat 0px 0px;
+	background: url(/Friendbook.com/img/contentbg.jpg) no-repeat 0px 0px;
 	background-attachment: fixed;
     background-position: center;
     background-size: cover;
@@ -69,7 +69,7 @@ body{
 	color:#71c1ff;
 }
 .content-w3{
-      background: url(/friendbook.com/img/bg.jpg) no-repeat 0px -89px;
+      background: url(/Friendbook.com/img/bg.jpg) no-repeat 0px -89px;
     background-size: cover;
     width: 62%;
     margin: 0 auto;
@@ -126,7 +126,7 @@ body{
 }
 @media(max-width:1080px){
 	.content-w3 {
-		background: url(/friendbook.com/img/bg.jpg) no-repeat -94px -71px;
+		background: url(/Friendbook.com/img/bg.jpg) no-repeat -94px -71px;
 	}
 	.content-w3 {
 		min-height: 563px;
@@ -146,7 +146,7 @@ body{
 }
 @media(max-width:768px){
 	.content-w3 {
-		background: url(/friendbook.com/img/bg.jpg) no-repeat -193px -80px;
+		background: url(/Friendbook.com/img/bg.jpg) no-repeat -193px -80px;
 	}
 	.content-w3 p {
 		width: 75%;
@@ -168,7 +168,7 @@ body{
 }
 @media(max-width:667px){
 	.content-w3 {
-		background: url(/friendbook.com/img/bg.jpg) no-repeat -242px -86px;
+		background: url(/Friendbook.com/img/bg.jpg) no-repeat -242px -86px;
 	}
 	.content-w3 p {
 		width: 90%;
@@ -176,7 +176,7 @@ body{
 }
 @media(max-width:600px){
 	.content-w3 {
-		background: url(/friendbook.com/img/bg.jpg) no-repeat -263px -86px;
+		background: url(/Friendbook.com/img/bg.jpg) no-repeat -263px -86px;
 	}
 	.nav-agileinfo ul li a {
 		font-size: 16px;
@@ -205,7 +205,7 @@ body{
 		padding: 16px 9px;
 	}
 	.content-w3 {
-		background: url(/friendbook.com/img/bg.jpg) no-repeat -293px -86px;
+		background: url(/Friendbook.com/img/bg.jpg) no-repeat -293px -86px;
 	}
 	.content-w3 h1 {
 		font-size: 150px;
@@ -272,7 +272,7 @@ body{
 		padding: 16px 4px;
 	}
 	.content-w3 {
-		background: url(/friendbook.com/img/bg.jpg) no-repeat -333px -86px;
+		background: url(/Friendbook.com/img/bg.jpg) no-repeat -333px -86px;
 	}
 	.content-w3 h1 {
 		font-size: 135px;

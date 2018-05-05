@@ -100,7 +100,7 @@ public class PostController {
 	}
 
 	@RequestMapping(value="/feed", method = RequestMethod.GET)
-	public String reloadFeed(HttpSession session, Model model) {
+	public String reloadFeed(HttpSession session, Model model) throws Exception {
 		try {
 			User u = (User) session.getAttribute("user");
 			ArrayList<Post> feed = userDao.getUserFeedById(u.getId());
