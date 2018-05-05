@@ -1,10 +1,9 @@
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import = "com.friendbook.model.user.User" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<title>Friendbook</title>
+<title>User Settings</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -24,15 +23,6 @@
 html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 </style>
 <body class="w3-theme-l5">
-
-
-<!-- Navbar on small screens -->
-<div id="navDemo" class="w3-bar-block w3-theme-d2 w3-hide w3-hide-large w3-hide-medium w3-large">
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 1</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 2</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 3</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Profile</a>
-</div>
 
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
@@ -55,36 +45,38 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         <!-- -=============POST IMAGE================- -->
           <div class="w3-row-padding" style="margin:0 -16px">
 	      </div>
-	      <h1 style="text-align: center">Register</h1>
-	      <form action="register" method="post">
+	      <h1 style="text-align: center">Settings</h1>
+	      <c:if test="${ message != null }">
+	      	<h3 style="color: red; text-align: center">${ message }</h3>
+	      </c:if>
+	      <form action="edit" method="post">
 		      <table align="center">
 		      	<tr>
 	              	<td>Username:</td>
-	              	<td><input type="text" class="w3-border w3-padding" name="username" required></td>
+	              	<td><input type="text" class="w3-border w3-padding" name="username" value="${ sessionScope.user.getUsername() }" ></td>
 	            </tr>
 	            <tr>
 	              	<td>Password:</td>
-	              	<td><input type="password" class="w3-border w3-padding" name="password" required></td>
+	              	<td><input type="password" class="w3-border w3-padding" name="password" value="" required></td>
 	            </tr>
 	            <tr>
 	              	<td>Confirm Password:</td>
-	              	<td><input type="password" class="w3-border w3-padding" name="confirm_password" required></td>
+	              	<td><input type="password" class="w3-border w3-padding" name="confirm_password" value="" required></td>
 	            </tr>
 	            <tr>
 	              	<td>Email:</td>
-	              	<td><input type="email" class="w3-border w3-padding" name="email" required></td>
+	              	<td><input type="email" class="w3-border w3-padding" name="email" value="${ sessionScope.user.getEmail() }" ></td>
 	            </tr>
 	            <tr>
 	              	<td>First Name:</td>
-	              	<td><input type="text" class="w3-border w3-padding" name="firstName" required></td>
+	              	<td><input type="text" class="w3-border w3-padding" name="first_name" value="${ sessionScope.user.getFirstName() }" ></td>
 	            </tr>
 	            <tr>
 	              	<td>Last Name:</td>
-	              	<td><input type="text" class="w3-border w3-padding" name="lastName" required></td>
+	              	<td><input type="text" class="w3-border w3-padding" name="last_name" value="${ sessionScope.user.getLastName() }" ></td>
 	            </tr>
 	           </table>
-	           <button style="margin:auto;display:block" type="submit" class="w3-button w3-theme">Register</button><br>
-	           <a href="login">Already have an account? Click here to login.</a>
+	           <button style="margin:auto;display:block" type="submit" class="w3-button w3-theme">Save Changes</button><br>
 	      </form>
        </div> 
     <!-- End Middle Column -->
@@ -95,33 +87,5 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
   
 <!-- End Page Container -->
 </div>
-<br>
- 
-<script>
-
-// Accordion
-function myFunction(id) {
-    var x = document.getElementById(id);
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-        x.previousElementSibling.className += " w3-theme-d1";
-    } else { 
-        x.className = x.className.replace("w3-show", "");
-        x.previousElementSibling.className = 
-        x.previousElementSibling.className.replace(" w3-theme-d1", "");
-    }
-}
-
-// Used to toggle the menu on smaller screens when clicking on the menu button
-function openNav() {
-    var x = document.getElementById("navDemo");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else { 
-        x.className = x.className.replace(" w3-show", "");
-    }
-}
-</script>
-
 </body>
 </html>

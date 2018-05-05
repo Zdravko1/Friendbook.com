@@ -27,7 +27,7 @@ public class User {
 		this.setLastName(lastName);
 	}
 	
-	public User(int id, String username, String password, String email, String firstName, String lastName) throws SQLException, WrongCredentialsException {
+	public User(long id, String username, String password, String email, String firstName, String lastName) throws SQLException, WrongCredentialsException {
 		this(username, password, email, firstName, lastName);
 		this.id = id;
 	}

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.friendbook.exceptions.WrongCredentialsException;
 import com.friendbook.model.comment.CommentDao;
+import com.friendbook.model.dto.SearchUserDTO;
 import com.friendbook.model.post.Post;
 import com.friendbook.model.post.PostDao;
 
@@ -30,16 +31,17 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public User getUserByNames(String name) throws SQLException, WrongCredentialsException {
-		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE CONCAT(first_name,' ', last_name) = ?";
+	public List<SearchUserDTO> getUsersByName(String name) throws SQLException, WrongCredentialsException {
+		List<SearchUserDTO> users = new ArrayList<>();
+		String query = "SELECT id, CONCAT(first_name,' ',last_name) AS name FROM users WHERE CONCAT(first_name,' ', last_name) = ?";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
-			rs.next();
-			User u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"),
-					rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
-			ps.close();
-			return u;
+			while(rs.next()) {
+				SearchUserDTO user = new SearchUserDTO(rs.getLong("id"), rs.getString("name"));
+				users.add(user);
+			}
+			return users;
 		}
 	}
 
@@ -53,7 +55,6 @@ public class UserDao implements IUserDao {
 			if (rs.next()) {
 				u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"),
 						rs.getString("first_name"), rs.getString("last_name"));
-				ps.close();
 				return u;
 			}
 		}
@@ -189,7 +190,7 @@ public class UserDao implements IUserDao {
 			while (rs.next()) {
 				User user = getByID(rs.getInt("user_id"));
 				Post post = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), user, rs.getTimestamp("date").toLocalDateTime());
-				postDao.getLikesByID(post.getId());
+				post.setLikes(postDao.getLikesByID(post.getId()));
 				commentDao.getAndSetAllCommentsOfGivenPost(post);
 				feed.add(post);
 			}
@@ -224,6 +225,31 @@ public class UserDao implements IUserDao {
 			p.setLikes(postDao.getLikesByID(p.getId()));
 			commentDao.getAndSetAllCommentsOfGivenPost(p);
 			return p;
+		}
+	}
+
+	public void existingEmailCheck(String email) throws SQLException, WrongCredentialsException {
+		String query = "SELECT email FROM users WHERE email = ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setString(1, email);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				throw new WrongCredentialsException("Existing email.");
+			}
+		}
+	}
+
+	public void editProfile(User editUser) throws SQLException {
+		String query = "UPDATE users SET username = ?, password = ?, email = ?, first_name = ?, last_name = ? WHERE id = ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setString(1, editUser.getUsername());
+			String hashedPassword = BCrypt.hashpw(editUser.getPassword(), BCrypt.gensalt());
+			ps.setString(2, hashedPassword);
+			ps.setString(3, editUser.getEmail());
+			ps.setString(4, editUser.getFirstName());
+			ps.setString(5, editUser.getLastName());
+			ps.setLong(6, editUser.getId());
+			ps.executeUpdate();
 		}
 	}
 }

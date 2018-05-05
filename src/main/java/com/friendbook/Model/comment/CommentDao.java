@@ -56,7 +56,7 @@ public class CommentDao implements ICommentDao {
 			while (rs.next()) {
 				Comment com = new Comment(rs.getLong("id"), rs.getLong("user_id"), comment.getPost(), comment.getId(),
 						rs.getString("text"), userDao.getByID(rs.getLong("user_id")) , rs.getTimestamp("date").toLocalDateTime());
-				getCommentsOfParentComment(com);
+				com.setLikes(getLikesByID(com.getId()));
 				comment.addComment(com);
 			}
 		}

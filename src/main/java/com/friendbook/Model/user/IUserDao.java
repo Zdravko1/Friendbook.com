@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.friendbook.exceptions.WrongCredentialsException;
+import com.friendbook.model.dto.SearchUserDTO;
 import com.friendbook.model.post.Post;
 
 public interface IUserDao {
 
-	User getUserByNames(String name) throws SQLException, WrongCredentialsException;
+	List<SearchUserDTO> getUsersByName(String name) throws SQLException, WrongCredentialsException;
 	User getByID(long id) throws SQLException, WrongCredentialsException;
 	void saveUser(User u) throws SQLException;
 	void existingUserNameCheck(String username) throws WrongCredentialsException, SQLException;
@@ -21,6 +22,7 @@ public interface IUserDao {
 	List<String> getUsersNamesStartingWith(String term) throws SQLException;
 	boolean isPostLiked(long userId, long postId) throws SQLException;
 	boolean isFollower(long followerId, long userId) throws SQLException;
-	
+	void existingEmailCheck(String email) throws SQLException, WrongCredentialsException;
 	void unfollowUser(long followerId, long followedId) throws SQLException;
+	void editProfile(User editUser) throws SQLException;
 }

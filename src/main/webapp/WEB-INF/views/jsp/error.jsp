@@ -26,7 +26,8 @@
 	<div class="content-w3">
 		<h1>404</h1>
 		<h2>Something went wrong</h2>
-		<p>The page you are looking for has been removed,had its name changed or temporarily unavailable</p>
+		<br>
+		<h2>${ error }</h2>
 	</div>
 </body>
 </html>

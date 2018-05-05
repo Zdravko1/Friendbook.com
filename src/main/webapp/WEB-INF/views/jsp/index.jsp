@@ -34,6 +34,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
   <a  href="." class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right" title="Home"></i>Home</a>
   <a href="feed" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Feed"><i class="fa fa-globe"></i></a>
+  <a href="edit" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Edit Profile"><i class="fa fa-user"></i></a>
   <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
   
   <form action="search" method="post">
@@ -210,7 +211,7 @@ function addComment(nameId, postId, id, currentCommentId){
 			var commentId = likeCommentId--; 
 			if(currentComment == null){
 				newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+idComment+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form><form action=\"comment\" method=\"post\"><input id=\"commentCommentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment('commentCommentID', "+postId+", "+commentId+", "+idComment+")\"></form>";
-				p.appendChild(newElement);//, p.lastChild.previousSibling);				
+				p.appendChild(newElement);			
 			} else {
 				newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+idComment+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form>";
 				commentElement.appendChild(newElement);
