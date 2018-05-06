@@ -65,15 +65,14 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String register(HttpServletRequest request) throws Exception {
-		String username = request.getParameter("username");
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-		String password2 = request.getParameter("confirm_password");
-		String firstName = request.getParameter("firstName");
-		String lastName = request.getParameter("lastName");
+	public String register(@RequestParam("username") String username,
+						   @RequestParam("password") String password,
+					   	   @RequestParam("confirm_password") String confirmPassword,
+						   @RequestParam("email") String email,
+						   @RequestParam("first_name") String firstName,
+						   @RequestParam("last_name") String lastName) throws Exception {
 
-		if (password.compareTo(password2) != 0) {
+		if (password.compareTo(confirmPassword) != 0) {
 			throw new WrongCredentialsException("Passwords don't match.");
 		}
 
@@ -141,10 +140,12 @@ public class UserController {
 		User user = (User) session.getAttribute("user");
 		try {
 			User visitedUser = userDao.getByID(userId);
-			if(visitedUser == null || user.getId() == visitedUser.getId()) {//TODO test
+			//checks if there is such user
+			if(visitedUser == null || user.getId() == visitedUser.getId()) {
 				model.addAttribute("posts", postDao.getPostsByUserID(user.getId()));
 				return "index";
 			}
+			//checks if the visited user is being followed or not
 			if (userDao.isFollower(user.getId(), visitedUser.getId())) {
 				visitedUser.setFollowed(true);
 			}
@@ -179,7 +180,7 @@ public class UserController {
 			// if the searched user is followed already put a flag and change the follow
 			// button to followed in jsp
 			// or if this is the same user
-			if(visitedUsers.isEmpty() || user.getId() == visitedUsers.get(0).getId()) {//TODO test
+			if(visitedUsers.isEmpty() || user.getId() == visitedUsers.get(0).getId()) {
 				model.addAttribute("posts", postDao.getPostsByUserID(user.getId()));
 				return "index";
 			}
