@@ -162,7 +162,7 @@ public class UserDao implements IUserDao {
 	@Override
 	public User getUserByUsername(String username) throws SQLException, WrongCredentialsException {
 		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE username = ?";
-		try(PreparedStatement ps = connection.prepareStatement(query)){
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
@@ -220,14 +220,15 @@ public class UserDao implements IUserDao {
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			User u = getByID(rs.getInt("user_id"));
-			Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"),
-					u, rs.getTimestamp("date").toLocalDateTime());
+			Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u,
+					rs.getTimestamp("date").toLocalDateTime());
 			p.setLikes(postDao.getLikesByID(p.getId()));
 			commentDao.getAndSetAllCommentsOfGivenPost(p);
 			return p;
 		}
 	}
 
+	@Override
 	public void existingEmailCheck(String email) throws SQLException, WrongCredentialsException {
 		String query = "SELECT email FROM users WHERE email = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
@@ -239,6 +240,7 @@ public class UserDao implements IUserDao {
 		}
 	}
 
+	@Override
 	public void editProfile(User editUser) throws SQLException {
 		String query = "UPDATE users SET username = ?, password = ?, email = ?, first_name = ?, last_name = ? WHERE id = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
@@ -249,6 +251,32 @@ public class UserDao implements IUserDao {
 			ps.setString(4, editUser.getFirstName());
 			ps.setString(5, editUser.getLastName());
 			ps.setLong(6, editUser.getId());
+			ps.executeUpdate();
+		}
+	}
+	
+	@Override
+	public String getUsernameByEmail(String receiverEmail) throws SQLException {
+		String query = "SELECT username FROM users WHERE email = ?";
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setString(1, receiverEmail);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getString("username");
+			}
+			throw new IllegalArgumentException("There isn't a registered user with this email.");
+		}
+	}
+
+	@Override
+	public void setNewPasswordByUserEmail(String receiverEmail, String rndPassword) throws SQLException {
+		String query = "UPDATE users SET password = ? WHERE email = ?";
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
+
+			String hashedPassword = BCrypt.hashpw(rndPassword, BCrypt.gensalt());
+			ps.setString(1, hashedPassword);
+			ps.setString(2, receiverEmail);
+
 			ps.executeUpdate();
 		}
 	}

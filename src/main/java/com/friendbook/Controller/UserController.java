@@ -7,7 +7,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
+import java.util.Random;
 
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,11 +43,74 @@ import com.google.gson.Gson;
 @Controller
 public class UserController {
 
+	private String mailUsername = "ittalentsfriendbook@gmail.com";
+	private String mailPassword = "ittalentsfriendbook123";
+	
 	@Autowired
 	private UserDao userDao;
 
 	@Autowired
 	private PostDao postDao;
+	
+	@RequestMapping(value = "/passwordRecovery", method = RequestMethod.GET)
+	public String passwordRecovery() {
+		return "passwordRecovery";
+	}
+	
+	@RequestMapping(value = "/passwordRecovery", method = RequestMethod.POST)
+	public String passwordRecovery(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		String receiverEmail = req.getParameter("email");
+		
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class",
+				"javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.port", "465");
+
+		Session session = Session.getDefaultInstance(props,
+			new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(mailUsername,mailPassword);
+				}
+			});
+
+		try {
+			String username = userDao.getUsernameByEmail(receiverEmail);
+			String rndPassword = generateRandomPassword();
+			
+			userDao.setNewPasswordByUserEmail(receiverEmail, rndPassword);
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(mailUsername));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(receiverEmail));
+			message.setSubject("Testing Subject");
+			message.setText("Dear "+ username +"," +
+					"Your new password has been set to " + rndPassword);
+			Transport.send(message);
+			return "login";
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	private String generateRandomPassword() {
+		String upperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String lowerLetters = upperLetters.toLowerCase();
+		String numbers = "0123456789";
+		String specialSymbols = "@#$%^&+=";
+		Random rnd = new Random();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < 5; i++) {
+			sb.append(upperLetters.charAt(rnd.nextInt(upperLetters.length())));
+			sb.append(lowerLetters.charAt(rnd.nextInt(lowerLetters.length())));
+			sb.append(numbers.charAt(rnd.nextInt(numbers.length())));
+			sb.append(specialSymbols.charAt(rnd.nextInt(specialSymbols.length())));
+		}
+		return sb.toString();
+	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String getRegisterPage() {
@@ -208,7 +282,7 @@ public class UserController {
 			model.addAttribute("posts", posts);
 			return "index";
 		} catch (SQLException | WrongCredentialsException e) {
-			System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
 			return "error";
 		}
 	}

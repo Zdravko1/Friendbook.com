@@ -24,7 +24,7 @@
 		<div class="clear"></div>
 	</div>
 	<div class="content-w3">
-		<h1>404</h1>
+	<br>
 		<h2>Something went wrong</h2>
 		<br>
 		<h2>${ error }</h2>

@@ -53,20 +53,16 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         <!-- -=============POST IMAGE================- -->
           <div class="w3-row-padding" style="margin:0 -16px">
 	      </div>
-	      <h1 style="text-align: center">Login</h1>
-	      <form action="login" method="post">
+	      <h1 style="text-align: center">Password Recovery</h1>
+	      <form action="passwordRecovery" method="post">
 		      <table align="center">
 		      	<tr>
-	              	<td>Username:</td>
-	              	<td><input type="text" class="w3-border w3-padding" name="username" maxlength="20" value="zdravko93" required></td>
-	            </tr>
-	            <tr>
-	              	<td>Password:</td>
-	              	<td><input type="password" class="w3-border w3-padding" name="password" maxlength="30" value="Zdravko123!@" required></td>
+	              	<td>Email:</td>
+	              	<td><input type="email" class="w3-border w3-padding" name="email" value="" required></td>
 	            </tr>
 	           </table>
-	           <button style="margin:auto;display:block" type="submit" class="w3-button w3-theme">Login</button><br>
-	           <a href="passwordRecovery">Forgot your password?</a><br/>
+	           <button style="margin:auto;display:block" type="submit" class="w3-button w3-theme">Submit</button><br>
+	           <a href="login">Back to login page.</a><br/>
 	           <a href="register">Don't have an account? Click here to register.</a>
 	      </form>
        </div> 

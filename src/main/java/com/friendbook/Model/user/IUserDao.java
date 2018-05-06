@@ -25,4 +25,7 @@ public interface IUserDao {
 	void existingEmailCheck(String email) throws SQLException, WrongCredentialsException;
 	void unfollowUser(long followerId, long followedId) throws SQLException;
 	void editProfile(User editUser) throws SQLException;
+	void setNewPasswordByUserEmail(String receiverEmail, String rndPassword) throws SQLException;
+	String getUsernameByEmail(String receiverEmail) throws SQLException;
+	
 }
