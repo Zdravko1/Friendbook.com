@@ -72,10 +72,12 @@ public class User {
 		}
 	}
 	
-	public void setUsername(String username) throws SQLException, WrongCredentialsException {
-//		if(userNameCheck(username)) {
+	public void setUsername(String username) throws WrongCredentialsException {
+		if(username != null && username.trim().length() > MIN_NAME_LENGTH && username.trim().length() < MAX_NAME_LENGTH) {
 			this.username = username;
-//		}
+			return;
+		}
+		throw new WrongCredentialsException("Invalid username.");
 	}
 
 	public void setPassword(String password) throws WrongCredentialsException {
