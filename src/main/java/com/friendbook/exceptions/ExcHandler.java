@@ -16,6 +16,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 			model.addAttribute("error", ERROR_MSG);
 	        return "error";
 	    }
+		
+		@ExceptionHandler(IllegalArgumentException.class)
+	    protected String errorHandler(IllegalArgumentException ex, Model model) {
+			ERROR_MSG = ex.getMessage();
+			model.addAttribute("error", ERROR_MSG);
+	        return "error";
+	    }
 	 
 	    @ExceptionHandler(value = { Exception.class})
 	    protected String errorHandler(Exception ex, Model model) {

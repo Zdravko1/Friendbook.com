@@ -88,6 +88,7 @@ public class UserController {
 			message.setSubject("Testing Subject");
 			message.setText("Dear "+ username +"," +
 					"Your new password has been set to " + rndPassword);
+			System.out.println(rndPassword);
 			Transport.send(message);
 			return "login";
 		} catch (Exception e) {
@@ -325,10 +326,6 @@ public class UserController {
 		//get user from session to check if username/email is changed or not
 		User user = (User) session.getAttribute("user");
 		//check if the password is correct
-		if(!BCrypt.checkpw(password, user.getPassword())) {
-			model.addAttribute("message", "Wrong password.");
-			return "settings";
-		}
 		try {
 			//get helping user object to edit the data
 			User editUser = new User(user.getId(), username, password, email, firstName, lastName);

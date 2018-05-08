@@ -77,7 +77,8 @@ public class User {
 			this.username = username;
 			return;
 		}
-		throw new WrongCredentialsException("Invalid username.");
+		throw new WrongCredentialsException("Invalid username. "
+				+ "Username should be between "+ MIN_NAME_LENGTH + " and " + MAX_NAME_LENGTH + " letters.");
 	}
 
 	public void setPassword(String password) throws WrongCredentialsException {
@@ -113,7 +114,8 @@ public class User {
 		if(password.matches(User.PASS_REGEX)) {
 			return true;
 		}
-		throw new WrongCredentialsException("Invalid password");
+		throw new WrongCredentialsException("Invalid password."
+				+ " The password must contain both uppercase and lowercase characters, numbers and special symbols.");
 	}
 	
 	private boolean emailCheck(String email) throws WrongCredentialsException {
